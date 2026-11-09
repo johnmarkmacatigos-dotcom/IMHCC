@@ -27,9 +27,9 @@ const lines: string[] = [
 
 const s = fallbackSettings;
 lines.push(
-  `insert into public.site_settings (id, company_name, tagline, hero_title, hero_subtitle, phone_primary, phone_secondary, email, address, business_hours, facebook_url, messenger_url, map_embed_url, about_intro, mission, vision, stats) values (1, ${[
+  `insert into public.site_settings (id, company_name, tagline, hero_title, hero_subtitle, phone_primary, phone_secondary, email, address, business_hours, facebook_url, messenger_url, map_embed_url, latitude, longitude, about_intro, mission, vision, stats) values (1, ${[
     s.company_name, s.tagline, s.hero_title, s.hero_subtitle, s.phone_primary, s.phone_secondary, s.email, s.address, s.business_hours,
-    s.facebook_url, s.messenger_url, s.map_embed_url, s.about_intro, s.mission, s.vision,
+    s.facebook_url, s.messenger_url, s.map_embed_url, s.latitude, s.longitude, s.about_intro, s.mission, s.vision,
   ].map(q).join(", ")}, ${q(JSON.stringify(s.stats))}::jsonb) on conflict (id) do nothing;`,
   "",
 );

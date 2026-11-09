@@ -40,15 +40,20 @@ export function SiteHeader({ phone, messengerUrl, serviceArea }: Props) {
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
         <div className="container-site flex items-center justify-between gap-4 py-2">
           <Link href="/" aria-label="Iloilo Modern Homes Construction Co. home" className="shrink-0">
-            <Image src="/images/logo.jpg" alt="Iloilo Modern Homes Construction Co." width={498} height={250} priority className="h-16 w-auto sm:h-20 lg:h-[88px]" />
+            <Image src="/images/logo.jpg" alt="Iloilo Modern Homes Construction Co." width={498} height={250} priority className="h-12 w-auto sm:h-14 lg:h-[68px]" />
           </Link>
-          <nav aria-label="Main" className="hidden items-center gap-7 text-[15px] font-medium lg:flex">
+          <nav aria-label="Main" className="hidden items-center gap-1 text-[15px] font-medium lg:flex">
             {mainNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 aria-current={isActive(item.href) ? "page" : undefined}
-                className={cn("py-2 hover:text-navy-800", isActive(item.href) ? "text-navy-800 font-semibold" : "text-gray-700")}
+                className={cn(
+                  "relative rounded-md px-3 py-2 transition-colors after:absolute after:inset-x-3 after:-bottom-0.5 after:h-[3px] after:rounded-full after:transition-colors",
+                  isActive(item.href)
+                    ? "bg-navy-100 font-semibold text-navy-800 after:bg-gold-500"
+                    : "text-gray-700 after:bg-transparent hover:bg-mist hover:text-navy-800",
+                )}
               >
                 {item.label}
               </Link>
@@ -83,7 +88,7 @@ export function SiteHeader({ phone, messengerUrl, serviceArea }: Props) {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
-                  className={cn("rounded-md px-3 py-3 text-base", isActive(item.href) ? "bg-navy-100 font-semibold text-navy-800" : "text-gray-700")}
+                  className={cn("rounded-md px-3 py-3 text-base", isActive(item.href) ? "border-l-4 border-gold-500 bg-navy-100 font-semibold text-navy-800" : "text-gray-700")}
                 >
                   {item.label}
                 </Link>

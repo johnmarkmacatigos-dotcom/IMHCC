@@ -11,6 +11,8 @@ export type SiteSettings = {
   facebook_url: string | null;
   messenger_url: string | null;
   map_embed_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
   about_intro: string | null;
   mission: string | null;
   vision: string | null;

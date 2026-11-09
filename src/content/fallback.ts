@@ -21,7 +21,11 @@ export const fallbackSettings: SiteSettings = {
   facebook_url: "https://www.facebook.com/iloilomodernhomesconstructionco",
   // Opens the Facebook Page's Messenger chat directly. "ref" tags chats that started from the website.
   messenger_url: "https://m.me/iloilomodernhomesconstructionco?ref=website",
-  map_embed_url: "https://www.google.com/maps?q=Santa+Barbara,+Iloilo&output=embed",
+  map_embed_url: null,
+  // Map pin for directions. APPROXIMATE (Santa Barbara town proper) until the owner sets the exact
+  // shop location in the dashboard settings.
+  latitude: 10.8231,
+  longitude: 122.5337,
   about_intro:
     "Iloilo Modern Homes Construction Co. is a construction, renovation, and hardware supply business based in Santa Barbara, Iloilo. We serve homeowners and businesses across Iloilo City and Iloilo Province, from new builds to kitchen makeovers and complete interior fit-outs.",
   mission:
