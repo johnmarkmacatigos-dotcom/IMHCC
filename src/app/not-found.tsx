@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { PublicChrome } from "@/components/site/PublicChrome";
 
 export default function NotFound() {
   return (
+    <PublicChrome>
     <div className="container-site flex flex-col items-start gap-5 py-24">
       <span className="eyebrow">Page not found</span>
       <h1 className="text-4xl">We couldn&apos;t find that page.</h1>
@@ -15,5 +17,6 @@ export default function NotFound() {
         </Link>
       </div>
     </div>
+    </PublicChrome>
   );
 }
