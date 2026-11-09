@@ -57,7 +57,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           </ul>
         </div>
       </div>
-      <div className="container-site flex flex-wrap justify-between gap-3 border-t border-[#1e3352] py-6 text-[13px]">
+      <div className="container-site flex flex-wrap justify-between gap-3 border-t border-[#1e3352] pt-6 pb-28 text-[13px]">
         <span>
           © {new Date().getFullYear()} {settings.company_name}
         </span>
