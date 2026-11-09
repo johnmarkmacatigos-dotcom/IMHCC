@@ -38,9 +38,9 @@ export function SiteHeader({ phone, messengerUrl, serviceArea }: Props) {
         </div>
       </div>
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
-        <div className="container-site flex items-center justify-between gap-4 py-3">
+        <div className="container-site flex items-center justify-between gap-4 py-2">
           <Link href="/" aria-label="Iloilo Modern Homes Construction Co. home" className="shrink-0">
-            <Image src="/images/logo.jpg" alt="Iloilo Modern Homes Construction Co." width={498} height={250} priority className="h-14 w-auto sm:h-16" />
+            <Image src="/images/logo.jpg" alt="Iloilo Modern Homes Construction Co." width={498} height={250} priority className="h-16 w-auto sm:h-20 lg:h-[88px]" />
           </Link>
           <nav aria-label="Main" className="hidden items-center gap-7 text-[15px] font-medium lg:flex">
             {mainNav.map((item) => (
