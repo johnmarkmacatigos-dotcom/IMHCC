@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HeroPhotos } from "@/components/site/HeroPhotos";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CtaBand } from "@/components/site/CtaBand";
@@ -30,7 +31,7 @@ export default async function HomePage() {
     <>
       {/* Hero */}
       <section className="bg-navy-800 text-white">
-        <div className="container-site flex flex-wrap items-center gap-12 py-16 lg:py-20">
+        <div className="container-site flex flex-wrap items-center gap-8 py-10 sm:gap-12 sm:py-16 lg:py-20">
           <div className="animate-fade-up flex min-w-0 flex-[1_1_440px] flex-col gap-6">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-300">Construction · Renovation · Fit-outs</span>
             <h1 className="text-4xl leading-[1.08] text-white sm:text-[56px]">{settings.hero_title}</h1>
@@ -44,13 +45,7 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="grid min-w-0 flex-[1_1_440px] grid-cols-2 gap-3.5">
-            {heroPhotos.map((p, i) => (
-              <div key={p.id} className={i === 0 ? "relative row-span-2 h-[420px] overflow-hidden rounded-lg" : "relative h-[203px] overflow-hidden rounded-lg"}>
-                {p.cover_image && <Image src={p.cover_image} alt={p.title} fill priority sizes="(min-width: 1024px) 300px, 50vw" className="object-cover" />}
-              </div>
-            ))}
-          </div>
+          <HeroPhotos photos={heroPhotos} />
         </div>
       </section>
 

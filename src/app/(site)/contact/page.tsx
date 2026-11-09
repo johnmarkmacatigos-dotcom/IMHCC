@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Clock, Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { ContactTabs } from "@/components/forms/ContactTabs";
+import { DirectionsMap } from "@/components/site/DirectionsMap";
 import { PageHero } from "@/components/site/PageHero";
 import { getProducts, getSettings } from "@/lib/data";
 import { telHref } from "@/lib/utils";
@@ -58,14 +59,12 @@ export default async function ContactPage({ searchParams }: Props) {
               );
             })}
           </ul>
-          {s.map_embed_url && (
-            <iframe
-              title="Map to Iloilo Modern Homes"
-              src={s.map_embed_url}
-              className="h-72 w-full rounded-xl border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+          {s.latitude !== null && s.longitude !== null ? (
+            <DirectionsMap lat={s.latitude} lng={s.longitude} label={s.company_name} />
+          ) : (
+            s.map_embed_url && (
+              <iframe title="Map to Iloilo Modern Homes" src={s.map_embed_url} className="h-72 w-full rounded-xl border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+            )
           )}
         </div>
         <div className="min-w-0 flex-[999_1_560px] rounded-2xl border border-gray-200 bg-white p-6 sm:p-9">

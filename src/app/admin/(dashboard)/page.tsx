@@ -1,0 +1,89 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Badge, Card, EmptyState, PageHeader, inquiryStatus, inquiryType, timeAgo } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
+
+export const metadata = { title: "Overview" };
+
+type Recent = { id: string; reference_no: string; type: keyof typeof inquiryType; status: keyof typeof inquiryStatus; full_name: string; service: string | null; created_at: string };
+
+export default async function Overview({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
+  const s = await requireAdmin();
+  const { denied } = await searchParams;
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+
+  const count = (table: string, filter: (q: ReturnType<typeof base>) => ReturnType<typeof base>) => filter(base(table)).then((r) => r.count ?? 0);
+  function base(table: string) {
+    return s.db.from(table).select("id", { count: "exact", head: true });
+  }
+
+  const [newCount, monthCount, openQuotes, wonMonth, published, pendingReviews, recent] = await Promise.all([
+    count("inquiries", (q) => q.eq("status", "new")),
+    count("inquiries", (q) => q.gte("created_at", monthStart.toISOString())),
+    count("inquiries", (q) => q.eq("type", "quotation").in("status", ["new", "contacted", "site_visit", "quoted"])),
+    count("inquiries", (q) => q.eq("status", "won").gte("updated_at", monthStart.toISOString())),
+    count("projects", (q) => q.eq("is_published", true)),
+    count("testimonials", (q) => q.eq("status", "pending")),
+    s.db.from("inquiries").select("id, reference_no, type, status, full_name, service, created_at").order("created_at", { ascending: false }).limit(8).returns<Recent[]>(),
+  ]);
+
+  const stats = [
+    { label: "New inquiries", value: newCount, href: "/admin/inquiries?status=new", highlight: newCount > 0 },
+    { label: "Inquiries this month", value: monthCount, href: "/admin/inquiries" },
+    { label: "Open quotations", value: openQuotes, href: "/admin/inquiries?type=quotation&status=open" },
+    { label: "Jobs won this month", value: wonMonth, href: "/admin/inquiries?status=won" },
+    { label: "Projects on the website", value: published, href: "/admin/projects", hide: !s.can.edit },
+    { label: "Testimonials to review", value: pendingReviews, href: "/admin/testimonials", hide: !s.can.edit, highlight: pendingReviews > 0 },
+  ].filter((x) => !x.hide);
+
+  const firstName = (s.profile.full_name ?? "").split(" ")[0];
+
+  return (
+    <>
+      <PageHeader title={firstName ? `Hello, ${firstName}` : "Overview"} intro="Here is what is happening with the business today." />
+      {denied && (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+          Your role does not include that page. Ask the owner if you need access.
+        </p>
+      )}
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        {stats.map((st) => (
+          <Link
+            key={st.label}
+            href={st.href}
+            className={`flex flex-col gap-1 rounded-xl bg-white p-5 shadow-sm ring-1 transition hover:ring-navy-800 ${st.highlight ? "ring-gold-500" : "ring-gray-200"}`}
+          >
+            <span className="font-display text-3xl font-semibold text-navy-800">{st.value}</span>
+            <span className="text-sm text-gray-600">{st.label}</span>
+          </Link>
+        ))}
+      </div>
+
+      <Card title="Latest inquiries">
+        {recent.data && recent.data.length > 0 ? (
+          <ul className="-mx-2 flex flex-col divide-y divide-gray-100">
+            {recent.data.map((i) => (
+              <li key={i.id}>
+                <Link href={`/admin/inquiries/${i.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg px-2 py-3 hover:bg-mist">
+                  <span className="w-28 font-mono text-[13px] text-gray-500">{i.reference_no}</span>
+                  <span className="min-w-40 flex-1 font-semibold text-navy-800">{i.full_name}</span>
+                  <span className="text-sm text-gray-600">{i.service ?? inquiryType[i.type]}</span>
+                  <Badge tone={inquiryStatus[i.status].tone}>{inquiryStatus[i.status].label}</Badge>
+                  <span className="w-24 text-right text-[13px] text-gray-500">{timeAgo(i.created_at)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <EmptyState>No inquiries yet. Requests from the website&apos;s quote, contact, and product forms will show up here.</EmptyState>
+        )}
+        <Link href="/admin/inquiries" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:underline">
+          All inquiries <ArrowRight className="size-4" aria-hidden />
+        </Link>
+      </Card>
+    </>
+  );
+}

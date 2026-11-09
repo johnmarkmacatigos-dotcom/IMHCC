@@ -1,9 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
-import { ContactDock } from "@/components/site/ContactDock";
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { SiteHeader } from "@/components/site/SiteHeader";
-import { getSettings } from "@/lib/data";
 import "./globals.css";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
@@ -30,23 +26,10 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#142B46" };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const settings = await getSettings();
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${outfit.variable} font-sans`}>
-        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2">
-          Skip to content
-        </a>
-        <SiteHeader
-          phone={settings.phone_primary}
-          messengerUrl={settings.messenger_url}
-          serviceArea="Santa Barbara, Iloilo · Serving Iloilo City and Iloilo Province"
-        />
-        <main id="main">{children}</main>
-        <SiteFooter settings={settings} />
-        <ContactDock phone={settings.phone_primary} messengerUrl={settings.messenger_url} />
-      </body>
+      <body className={`${inter.variable} ${outfit.variable} font-sans`}>{children}</body>
     </html>
   );
 }
