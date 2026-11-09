@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #0b1a2c;
+  --color-navy-900: #0e2036;
+  --color-navy-800: #142b46;
+  --color-navy-700: #1f3a5c;
+  --color-navy-100: #e6eef8;
+  --color-gold-500: #c99a35;
+  --color-gold-300: #e9c46a;
+  --color-gold-100: #f6eedc;
+  --color-gold-700: #8a6516;
+  --color-ink: #1f2937;
+  --color-mist: #f3f4f6;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-navy-800);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-gold-500);
+    outline-offset: 2px;
+  }
+}
+
+@utility container-site {
+    @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6;
+}
+
+@utility eyebrow {
+    @apply text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-700;
+}
+
+@utility btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-md px-6 py-3 text-[15px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-gold {
+    @apply btn bg-gold-500 text-navy-800 hover:bg-gold-300;
+}
+
+@utility btn-navy {
+    @apply btn bg-navy-800 text-white hover:bg-navy-700;
+}
+
+@utility btn-outline-gold {
+    @apply btn border-[1.5px] border-gold-500 text-white hover:bg-white/10;
+}
+
+@utility btn-outline {
+    @apply btn border-[1.5px] border-navy-800 text-navy-800 hover:bg-navy-100;
+}
+
+@utility field-label {
+    @apply flex flex-col gap-1.5 text-sm font-semibold text-gray-700;
+}
+
+@utility field-input {
+    @apply min-h-11 w-full rounded-md border border-[#cbd2dc] bg-white px-3.5 py-3 text-[15px] font-normal text-ink placeholder:text-gray-400 focus:border-navy-800 focus:outline-none focus:ring-2 focus:ring-navy-800/20;
+}
+
+@utility field-error {
+    @apply text-[13px] font-medium text-red-700;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
