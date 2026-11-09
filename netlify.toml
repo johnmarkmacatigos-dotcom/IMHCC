@@ -1,0 +1,8 @@
+# Temporary hosting on Netlify (free) until the Vercel account is available.
+# Netlify detects Next.js automatically and runs the pages, API routes, and image optimization.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
