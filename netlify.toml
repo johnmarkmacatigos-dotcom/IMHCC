@@ -1,8 +1,12 @@
 # Temporary hosting on Netlify (free) until the Vercel account is available.
-# Netlify detects Next.js automatically and runs the pages, API routes, and image optimization.
+# The Next.js plugin turns the build into Netlify functions and static files;
+# without it Netlify uploads the build but serves a 404 for every page.
 [build]
   command = "npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
