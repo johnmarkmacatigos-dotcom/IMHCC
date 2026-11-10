@@ -3,6 +3,7 @@ import { Clock, Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { ContactTabs } from "@/components/forms/ContactTabs";
 import { DirectionsMap } from "@/components/site/DirectionsMap";
 import { OFFICE_LOCATION } from "@/content/office";
+import { WHATSAPP_NUMBER, whatsappHref } from "@/content/business";
 import { PageHero } from "@/components/site/PageHero";
 import { getProducts, getSettings } from "@/lib/data";
 import { telHref } from "@/lib/utils";
@@ -23,6 +24,7 @@ export default async function ContactPage({ searchParams }: Props) {
     s.phone_primary && { icon: Phone, label: "Call us", value: s.phone_primary, href: telHref(s.phone_primary) },
     s.phone_secondary && { icon: Phone, label: "Other number", value: s.phone_secondary, href: telHref(s.phone_secondary) },
     s.messenger_url && { icon: MessageCircle, label: "Messenger", value: "Chat with us", href: s.messenger_url, external: true },
+    { icon: MessageCircle, label: "WhatsApp", value: WHATSAPP_NUMBER, href: whatsappHref(WHATSAPP_NUMBER, "Hi! I'd like to ask about a project."), external: true },
     s.email && { icon: Mail, label: "Email", value: s.email, href: `mailto:${s.email}` },
     s.facebook_url && { icon: Globe, label: "Facebook", value: "Follow our page", href: s.facebook_url, external: true },
     s.address && { icon: MapPin, label: "Location", value: s.address },

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { SiteSettings } from "@/lib/types";
 import { telHref } from "@/lib/utils";
+import { WHATSAPP_NUMBER, whatsappHref } from "@/content/business";
 import { mainNav } from "./nav";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
@@ -9,7 +10,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
       <div className="container-site grid gap-8 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           <strong className="font-display text-lg text-white">{settings.company_name}</strong>
-          <p className="leading-relaxed">Construction, renovation, and hardware supply in Santa Barbara, Iloilo.</p>
+          <p className="leading-relaxed">We design. We execute. Construction, renovation, and hardware supply in Santa Barbara, Iloilo.</p>
         </div>
         <div className="flex flex-col gap-2">
           <strong className="text-gold-300">Contact</strong>
@@ -50,6 +51,16 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               </Link>
             </li>
             <li>
+              <Link href="/resources" className="hover:text-white">
+                Permit guide
+              </Link>
+            </li>
+            <li>
+              <Link href="/careers" className="hover:text-white">
+                Careers
+              </Link>
+            </li>
+            <li>
               <Link href="/privacy" className="hover:text-white">
                 Privacy
               </Link>
@@ -72,6 +83,9 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               Messenger
             </a>
           )}
+          <a href={whatsappHref(WHATSAPP_NUMBER)} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+            WhatsApp
+          </a>
         </span>
       </div>
     </footer>

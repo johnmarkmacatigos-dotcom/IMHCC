@@ -27,7 +27,7 @@ const lines: string[] = [
 
 const s = fallbackSettings;
 lines.push(
-  `insert into public.site_settings (id, company_name, tagline, hero_title, hero_subtitle, phone_primary, phone_secondary, email, address, business_hours, facebook_url, messenger_url, map_embed_url, latitude, longitude, about_intro, mission, vision, stats) values (1, ${[
+  `insert into imhcc.site_settings (id, company_name, tagline, hero_title, hero_subtitle, phone_primary, phone_secondary, email, address, business_hours, facebook_url, messenger_url, map_embed_url, latitude, longitude, about_intro, mission, vision, stats) values (1, ${[
     s.company_name, s.tagline, s.hero_title, s.hero_subtitle, s.phone_primary, s.phone_secondary, s.email, s.address, s.business_hours,
     s.facebook_url, s.messenger_url, s.map_embed_url, s.latitude, s.longitude, s.about_intro, s.mission, s.vision,
   ].map(q).join(", ")}, ${q(JSON.stringify(s.stats))}::jsonb) on conflict (id) do nothing;`,
@@ -36,7 +36,7 @@ lines.push(
 
 for (const x of fallbackServices) {
   lines.push(
-    `insert into public.services (slug, name, category, summary, description, scope, cover_image, sort_order, is_featured, is_published) values (${[
+    `insert into imhcc.services (slug, name, category, summary, description, scope, cover_image, sort_order, is_featured, is_published) values (${[
       x.slug, x.name, x.category, x.summary, x.description, x.scope, x.cover_image, x.sort_order, x.is_featured, true,
     ].map(q).join(", ")}) on conflict (slug) do nothing;`,
   );
@@ -45,13 +45,13 @@ lines.push("");
 
 fallbackProjects.forEach((p, i) => {
   lines.push(
-    `insert into public.projects (slug, title, category, status, location, summary, story, scope, cover_image, is_featured, is_published, sort_order) values (${[
+    `insert into imhcc.projects (slug, title, category, status, location, summary, story, scope, cover_image, is_featured, is_published, sort_order) values (${[
       p.slug, p.title, p.category, p.status, p.location, p.summary, p.story, p.scope, p.cover_image, p.is_featured, true, i,
     ].map(q).join(", ")}) on conflict (slug) do nothing;`,
   );
   for (const ph of p.photos ?? []) {
     lines.push(
-      `insert into public.project_photos (project_id, image_url, caption, phase, sort_order) select id, ${q(ph.image_url)}, ${q(ph.caption)}, ${q(ph.phase)}, ${ph.sort_order} from public.projects where slug = ${q(p.slug)} and not exists (select 1 from public.project_photos pp join public.projects pj on pj.id = pp.project_id where pj.slug = ${q(p.slug)} and pp.image_url = ${q(ph.image_url)});`,
+      `insert into imhcc.project_photos (project_id, image_url, caption, phase, sort_order) select id, ${q(ph.image_url)}, ${q(ph.caption)}, ${q(ph.phase)}, ${ph.sort_order} from imhcc.projects where slug = ${q(p.slug)} and not exists (select 1 from imhcc.project_photos pp join imhcc.projects pj on pj.id = pp.project_id where pj.slug = ${q(p.slug)} and pp.image_url = ${q(ph.image_url)});`,
     );
   }
 });
@@ -59,7 +59,7 @@ lines.push("");
 
 for (const x of fallbackProducts) {
   lines.push(
-    `insert into public.products (slug, name, category, description, price, price_on_request, stock_status, delivery_info, image_url, is_featured, is_published) values (${[
+    `insert into imhcc.products (slug, name, category, description, price, price_on_request, stock_status, delivery_info, image_url, is_featured, is_published) values (${[
       x.slug, x.name, x.category, x.description, x.price, x.price_on_request, x.stock_status, x.delivery_info, x.image_url, x.is_featured, true,
     ].map(q).join(", ")}) on conflict (slug) do nothing;`,
   );
