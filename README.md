@@ -40,11 +40,15 @@ npm run dev                  # http://localhost:3000
 
 ## Connect Supabase
 
-1. Create a project at [supabase.com](https://supabase.com) (region: Singapore).
-2. In the SQL editor, run each file in `supabase/migrations` in order (`...0001_init.sql`, `...0002_settings_location.sql`, `...0003_dashboard.sql`), then `supabase/seed.sql`.
-3. Copy the project URL and anon key from **Settings > API** into your environment variables.
-4. In **Authentication > URL Configuration**, set the Site URL to the website address.
-5. Open `/admin/signup` on the website and create the Owner account first (the first account becomes the Owner). Later accounts start with no access until the Owner switches them on. If nobody else will join for a while, you can turn off "Allow new users to sign up" under **Authentication > Sign In / Providers**.
+Everything lives in its own `imhcc` schema with `imhcc-` storage buckets, so the site can share a Supabase project with other apps without touching their tables.
+
+1. Use an existing project or create one (region: Singapore).
+2. In the SQL editor, run each file in `supabase/migrations` in order, then `supabase/seed.sql`.
+3. **Settings > Data API > Exposed schemas:** add `imhcc`.
+4. **Authentication > URL Configuration > Redirect URLs:** add `https://<your-site>/admin/auth/confirm` (and `https://deploy-preview-*--<site>.netlify.app/admin/auth/confirm` for previews).
+5. Copy the project URL and anon key from **Settings > API** into your environment variables.
+
+Sign-in accounts are shared across a project. Only accounts created on this site's sign-up page get a dashboard profile automatically; someone who already has an account from another app can sign in here and waits for the owner to switch on their access.
 
 ## Deploy on Netlify (temporary, free)
 

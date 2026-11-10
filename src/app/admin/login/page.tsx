@@ -9,10 +9,10 @@ import { signIn } from "../auth-actions";
 
 export const metadata = { title: "Sign in" };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; confirmed?: string }> }) {
   if (!isSupabaseConfigured) return <NotConnected />;
   if (await getSession()) redirect("/admin");
-  const { next } = await searchParams;
+  const { next, confirmed } = await searchParams;
   return (
     <AuthCard
       title="Sign in to the dashboard"
@@ -27,6 +27,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         </>
       }
     >
+      {confirmed && <p className="rounded-lg bg-[#e7f3ec] px-4 py-3 text-sm font-medium text-[#1e6b3e]">Your email is confirmed. Sign in to continue.</p>}
       <AdminForm action={signIn} submitLabel="Sign in">
         <input type="hidden" name="next" value={next ?? ""} />
         <TextField name="email" label="Email" type="email" inputMode="email" required />

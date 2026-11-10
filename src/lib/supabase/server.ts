@@ -1,7 +1,7 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "./env";
+import { dbSchema, isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "./env";
 
 /**
  * Supabase client that acts as the signed-in dashboard user (session from cookies).
@@ -11,6 +11,7 @@ export async function getServerClient() {
   if (!isSupabaseConfigured) return null;
   const store = await cookies();
   return createServerClient(supabaseUrl, supabaseAnonKey, {
+    db: { schema: dbSchema },
     cookies: {
       getAll: () => store.getAll(),
       setAll: (list) => {

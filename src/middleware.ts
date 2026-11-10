@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "@/lib/supabase/env";
 
-const openPaths = ["/admin/login", "/admin/signup"];
+const openPaths = ["/admin/login", "/admin/signup", "/admin/auth/confirm"];
 
 /** Keeps the dashboard session fresh and sends signed-out visitors to the sign-in page. */
 export async function middleware(request: NextRequest) {

@@ -1,4 +1,5 @@
 "use server";
+import { buckets } from "@/lib/supabase/env";
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -122,9 +123,9 @@ export async function deleteProjectPhoto(id: string): Promise<{ error?: string }
   const { error } = await s.db.from("project_photos").delete().eq("id", id);
   if (error) return { error: "Could not delete the photo." };
   // Remove the file too when it lives in our media bucket.
-  const marker = "/storage/v1/object/public/media/";
+  const marker = `/storage/v1/object/public/${buckets.media}/`;
   if (photo?.image_url.includes(marker)) {
-    await s.db.storage.from("media").remove([decodeURIComponent(photo.image_url.split(marker)[1])]);
+    await s.db.storage.from(buckets.media).remove([decodeURIComponent(photo.image_url.split(marker)[1])]);
   }
   await logActivity(s, "deleted a photo", "project", photo?.project_id);
   refreshSite();

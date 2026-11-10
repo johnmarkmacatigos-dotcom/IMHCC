@@ -1,3 +1,4 @@
+import { buckets } from "@/lib/supabase/env";
 import { notFound } from "next/navigation";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import { AdminForm, SelectField, TextArea } from "@/components/admin/Form";
@@ -42,7 +43,7 @@ export default async function InquiryPage({ params }: { params: Promise<{ id: st
   const [{ data: team }, photos] = await Promise.all([
     s.db.from("profiles").select("id, full_name, email").eq("is_active", true).order("full_name"),
     inq.attachments.length
-      ? s.db.storage.from("inquiry-uploads").createSignedUrls(inq.attachments, 60 * 60)
+      ? s.db.storage.from(buckets.inquiryUploads).createSignedUrls(inq.attachments, 60 * 60)
       : Promise.resolve({ data: [] as { signedUrl: string; path: string | null }[] }),
   ]);
 
