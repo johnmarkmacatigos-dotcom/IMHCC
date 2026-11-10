@@ -19,7 +19,7 @@ Built with Next.js 15, TypeScript, Tailwind CSS, Supabase (PostgreSQL, Auth, Sto
 - Inquiries: filter, search, call/text/email buttons, customer photos, status (New → Contacted → Site visit → Quoted → Won/Lost/Closed), who handles it, and team notes
 - Projects: details, publish/feature switches, and photo uploads tagged Before, During, or After, with captions, order, and cover picture
 - Testimonials (shown only when approved and the customer consented), Services, Hardware products (price, stock), Promotions (start/end dates)
-- Website settings, including the shop's map pin (use the phone's location while at the shop, or paste a Google Maps link)
+- Website settings (the contact map's office pin is fixed in `src/content/office.ts`: QG95+78H Santa Barbara, Iloilo)
 - Team roles and an activity log of every change
 - What each role can open: Staff (inquiries, products), Editor (plus website content), Admin (plus settings, team, activity), Owner (everything, including the owner role). The database enforces the same rules.
 

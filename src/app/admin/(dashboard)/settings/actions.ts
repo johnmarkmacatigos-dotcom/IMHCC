@@ -6,13 +6,6 @@ import { dbError, fieldErrors, formObject, optional, optionalUrl, required } fro
 import { refreshSite } from "@/lib/admin/revalidate";
 import { logActivity, requireAdmin } from "@/lib/admin/session";
 
-const coord = (min: number, max: number) =>
-  z
-    .string()
-    .trim()
-    .transform((v) => (v === "" ? null : Number(v)))
-    .pipe(z.number({ message: "Enter a number" }).min(min).max(max).nullable());
-
 const schema = z.object({
   company_name: required(160, "Business name"),
   tagline: optional(300, "Tagline"),
@@ -29,8 +22,6 @@ const schema = z.object({
   business_hours: optional(200, "Business hours"),
   facebook_url: optionalUrl,
   messenger_url: optionalUrl,
-  latitude: coord(-90, 90),
-  longitude: coord(-180, 180),
   about_intro: optional(3000, "About"),
   mission: optional(1500, "Mission"),
   vision: optional(1500, "Vision"),
