@@ -56,3 +56,14 @@ export const JOB_OPENINGS: JobOpening[] = [
     requirements: ["Skilled in CHB laying, plastering, tile setting, and concrete works", "Willing to work on-site", "Reliable and safety-minded"],
   },
 ];
+
+export type Announcement = { label: string; text: string; href: string };
+
+/**
+ * Standing messages for the scrolling banner at the top of every page. Job openings and
+ * current promotions from the dashboard are added automatically (see AnnouncementBar).
+ */
+export const STANDING_ANNOUNCEMENTS: Announcement[] = [
+  { label: "Free guide", text: "Building a house? Follow our 6-step building permit checklist", href: "/resources" },
+  { label: "Free quote", text: "Site visit and quotation at no cost, anywhere in Iloilo", href: "/quote" },
+];
