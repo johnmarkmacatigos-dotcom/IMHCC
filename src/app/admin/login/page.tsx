@@ -28,7 +28,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       }
     >
       {confirmed && <p className="rounded-lg bg-[#e7f3ec] px-4 py-3 text-sm font-medium text-[#1e6b3e]">Your email is confirmed. Sign in to continue.</p>}
-      <AdminForm action={signIn} submitLabel="Sign in">
+      <AdminForm action={signIn} submitLabel="Sign in" redirectToast={false}>
         <input type="hidden" name="next" value={next ?? ""} />
         <TextField name="email" label="Email" type="email" inputMode="email" required />
         <TextField name="password" label="Password" type="password" required />

@@ -51,15 +51,23 @@ export function AdminNav({ can, newInquiries, user, signOut }: { can: { edit: bo
           href={href}
           aria-current={isActive(href) ? "page" : undefined}
           className={cn(
-            "flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-colors",
-            isActive(href) ? "bg-white/10 font-semibold text-white shadow-[inset_3px_0_0_var(--color-gold-500)]" : "text-[#c9d3df] hover:bg-white/5 hover:text-white",
+            "group admin-press flex min-h-11 items-center gap-3 rounded-lg px-3 text-[15px] transition-[background-color,color,box-shadow] duration-200",
+            isActive(href)
+              ? "bg-white/10 font-semibold text-white shadow-[inset_3px_0_0_var(--color-gold-500)]"
+              : "text-[#c9d3df] shadow-[inset_0_0_0_var(--color-gold-500)] hover:bg-white/5 hover:text-white hover:shadow-[inset_2px_0_0_rgb(201_154_53/0.5)]",
           )}
         >
-          <Icon className="size-[18px] shrink-0" aria-hidden />
+          <Icon
+            className={cn("size-[18px] shrink-0 transition-transform duration-200 group-hover:scale-110", isActive(href) && "text-gold-500")}
+            aria-hidden
+          />
           <span className="flex-1">{label}</span>
           {href === "/admin/inquiries" && newInquiries > 0 && (
-            <span className="rounded-full bg-brick-600 px-2 py-0.5 text-xs font-bold text-white" aria-label={`${newInquiries} new`}>
-              {newInquiries}
+            <span className="relative flex" aria-label={`${newInquiries} new`}>
+              <span className="absolute inset-0 animate-ping rounded-full bg-brick-500 opacity-40 motion-reduce:hidden" aria-hidden />
+              <span key={newInquiries} className="admin-pop relative rounded-full bg-brick-600 px-2 py-0.5 text-xs font-bold text-white">
+                {newInquiries}
+              </span>
             </span>
           )}
         </Link>
@@ -77,22 +85,26 @@ export function AdminNav({ can, newInquiries, user, signOut }: { can: { edit: bo
         <Link href="/admin" className="flex items-center gap-2">
           <Image src="/images/logo.jpg" alt="Iloilo Modern Homes dashboard" width={498} height={250} className="h-10 w-auto" />
         </Link>
-        <button type="button" onClick={() => setOpen(true)} className="flex size-11 items-center justify-center rounded-lg border border-gray-300" aria-label="Open menu" aria-expanded={open}>
+        <button type="button" onClick={() => setOpen(true)} className="admin-press flex size-11 items-center justify-center rounded-lg border border-gray-300" aria-label="Open menu" aria-expanded={open}>
           <Menu className="size-5" aria-hidden />
         </button>
       </div>
 
-      {open && <div className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setOpen(false)} aria-hidden />}
+      <div
+        className={cn("fixed inset-0 z-40 bg-navy-950/50 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden", open ? "opacity-100" : "pointer-events-none opacity-0")}
+        onClick={() => setOpen(false)}
+        aria-hidden
+      />
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-6 overflow-y-auto bg-navy-900 px-4 py-5 transition-transform lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col gap-6 overflow-y-auto bg-navy-900 px-4 py-5 transition-transform duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] lg:sticky lg:top-0 lg:h-dvh lg:w-64 lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex items-center justify-between px-2">
           <Link href="/admin" className="flex items-center gap-2.5 text-white">
-            <Building2 className="size-6 text-gold-500" aria-hidden />
+            <Building2 className="size-6 text-gold-500 transition-transform duration-300 hover:rotate-[-6deg]" aria-hidden />
             <span className="font-display text-lg font-semibold leading-tight">
               Iloilo Modern Homes
               <span className="block text-[11px] font-bold tracking-[0.14em] text-brick-500 [text-shadow:0_0_10px_rgba(207,68,54,0.55)]">CONSTRUCTION CO.</span>

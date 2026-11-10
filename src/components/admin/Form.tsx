@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, startTransition, useActionState, useContext, useEffect, useRef } from "react";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import { createContext, startTransition, useActionState, useContext, useEffect, useRef, useState } from "react";
+import { Check, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { clearPendingToast, toast, toastAfterNavigation } from "./motion";
 
 export type FormState = { error?: string; fieldErrors?: Record<string, string>; message?: string };
 type Action = (state: FormState, fd: FormData) => Promise<FormState>;
@@ -17,19 +18,35 @@ export function AdminForm({
   className,
   submitLabel = "Save",
   resetOnSuccess = false,
+  redirectToast = "Saved.",
 }: {
   action: Action;
   children: React.ReactNode;
   className?: string;
   submitLabel?: string;
   resetOnSuccess?: boolean;
+  /** Toast to show if the action moves to another page instead of answering. false for sign-in forms. */
+  redirectToast?: string | false;
 }) {
   const [state, formAction, pending] = useActionState(action, {});
   const ref = useRef<HTMLFormElement>(null);
+  const [justSaved, setJustSaved] = useState(false);
+  const initial = useRef(state);
 
   useEffect(() => {
+    if (state === initial.current) return;
+    // The action answered here (no redirect), so any toast queued for a page change is not needed.
+    clearPendingToast();
     if (state.message && resetOnSuccess) ref.current?.reset();
-    if (state.error) ref.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
+    if (state.message) {
+      toast(state.message);
+      setJustSaved(true);
+      const t = setTimeout(() => setJustSaved(false), 1800);
+      return () => clearTimeout(t);
+    }
+    if (state.error) {
+      ref.current?.querySelector<HTMLElement>("[aria-invalid=true]")?.focus();
+    }
   }, [state, resetOnSuccess]);
 
   return (
@@ -40,6 +57,9 @@ export function AdminForm({
       onSubmit={(e) => {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
+        // Actions that create or save and then open another page never answer the form, so the
+        // confirmation is handed over to the next page.
+        if (redirectToast) toastAfterNavigation(redirectToast);
         startTransition(() => formAction(fd));
       }}
       className={cn("flex flex-col gap-5", className)}
@@ -47,17 +67,19 @@ export function AdminForm({
     >
       <FieldErrors.Provider value={state.fieldErrors ?? {}}>{children}</FieldErrors.Provider>
       {state.error && (
-        <p role="alert" className="rounded-lg bg-brick-50 px-4 py-3 text-sm font-medium text-brick-700">
+        <p key={JSON.stringify(state)} role="alert" className="admin-shake rounded-lg bg-brick-50 px-4 py-3 text-sm font-medium text-brick-700">
           {state.error}
         </p>
       )}
       {state.message && (
-        <p role="status" className="flex items-center gap-2 rounded-lg bg-[#e7f3ec] px-4 py-3 text-sm font-medium text-[#1e6b3e]">
-          <CheckCircle2 className="size-4" aria-hidden /> {state.message}
+        <p role="status" className="admin-page-in flex items-center gap-2 rounded-lg bg-[#e7f3ec] px-4 py-3 text-sm font-medium text-[#1e6b3e]">
+          <CheckCircle2 className="admin-pop size-4" aria-hidden /> {state.message}
         </p>
       )}
       <div>
-        <SubmitButton pending={pending}>{submitLabel}</SubmitButton>
+        <SubmitButton pending={pending} saved={justSaved && !pending}>
+          {submitLabel}
+        </SubmitButton>
       </div>
     </form>
   );
@@ -65,11 +87,16 @@ export function AdminForm({
 
 const FieldErrors = createContext<Record<string, string>>({});
 
-export function SubmitButton({ children, className, pending }: { children: React.ReactNode; className?: string; pending: boolean }) {
+export function SubmitButton({ children, className, pending, saved }: { children: React.ReactNode; className?: string; pending: boolean; saved?: boolean }) {
   return (
-    <button type="submit" disabled={pending} className={cn("btn-navy", className)}>
+    <button
+      type="submit"
+      disabled={pending}
+      className={cn("btn-navy min-w-32", saved && "bg-gold-500 text-navy-900 hover:bg-gold-500", className)}
+    >
       {pending && <Loader2 className="size-4 animate-spin" aria-hidden />}
-      {pending ? "Saving…" : children}
+      {saved && <Check key="saved" className="admin-pop size-4" strokeWidth={3} aria-hidden />}
+      {pending ? "Saving…" : saved ? "Saved" : children}
     </button>
   );
 }
