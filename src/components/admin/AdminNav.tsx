@@ -58,7 +58,7 @@ export function AdminNav({ can, newInquiries, user, signOut }: { can: { edit: bo
           <Icon className="size-[18px] shrink-0" aria-hidden />
           <span className="flex-1">{label}</span>
           {href === "/admin/inquiries" && newInquiries > 0 && (
-            <span className="rounded-full bg-gold-500 px-2 py-0.5 text-xs font-bold text-navy-900" aria-label={`${newInquiries} new`}>
+            <span className="rounded-full bg-brick-600 px-2 py-0.5 text-xs font-bold text-white" aria-label={`${newInquiries} new`}>
               {newInquiries}
             </span>
           )}
@@ -95,6 +95,7 @@ export function AdminNav({ can, newInquiries, user, signOut }: { can: { edit: bo
             <Building2 className="size-6 text-gold-500" aria-hidden />
             <span className="font-display text-lg font-semibold leading-tight">
               Iloilo Modern Homes
+              <span className="block text-[11px] font-bold tracking-[0.14em] text-brick-500 [text-shadow:0_0_10px_rgba(207,68,54,0.55)]">CONSTRUCTION CO.</span>
               <span className="block text-xs font-normal text-[#9fb0c4]">Dashboard</span>
             </span>
           </Link>

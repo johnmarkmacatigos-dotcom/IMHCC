@@ -292,7 +292,7 @@ export function InquiryForm({ type, services = [], defaultService, productId, pr
       </div>
 
       {serverError && (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+        <p role="alert" className="rounded-lg bg-brick-50 px-4 py-3 text-sm font-medium text-brick-700">
           {serverError}
         </p>
       )}

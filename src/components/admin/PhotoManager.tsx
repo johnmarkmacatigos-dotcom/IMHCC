@@ -123,7 +123,7 @@ export function PhotoManager({ projectId, photos, cover }: { projectId: string; 
                 <button
                   type="button"
                   onClick={() => window.confirm("Delete this photo?") && run(() => deleteProjectPhoto(p.id))}
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-red-700 hover:underline"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-brick-600 hover:underline"
                 >
                   <Trash2 className="size-4" aria-hidden /> Delete
                 </button>

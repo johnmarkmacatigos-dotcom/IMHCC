@@ -1,3 +1,4 @@
+import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
@@ -30,11 +31,13 @@ export default async function ServicesPage() {
                 </Link>
                 <span className="line-clamp-1 text-[13px] text-gray-500">{x.summary}</span>
               </Td>
-              <Td>{x.category}</Td>
+              <Td>
+                <CategoryTag category={x.category} />
+              </Td>
               <Td>
                 <span className="flex gap-1.5">
                   {x.is_published ? <Badge tone="green">Shown</Badge> : <Badge>Hidden</Badge>}
-                  {x.is_featured && <Badge tone="gold">Featured</Badge>}
+                  {x.is_featured && <Badge tone="goldSolid">Featured</Badge>}
                 </span>
               </Td>
             </tr>

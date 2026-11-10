@@ -12,7 +12,7 @@ export function DeleteButton({ action, id, label = "Delete", confirm }: { action
       }}
     >
       <input type="hidden" name="id" value={id} />
-      <button className="inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-semibold text-red-700 hover:bg-red-50">
+      <button className="inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-semibold text-brick-600 hover:bg-brick-50">
         <Trash2 className="size-4" aria-hidden /> {label}
       </button>
     </form>

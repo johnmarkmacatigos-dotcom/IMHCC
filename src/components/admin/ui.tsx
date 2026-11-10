@@ -35,7 +35,10 @@ const tones = {
   navy: "bg-navy-100 text-navy-800",
   gold: "bg-gold-100 text-gold-700",
   green: "bg-[#e7f3ec] text-[#1e6b3e]",
-  red: "bg-red-50 text-red-800",
+  red: "bg-brick-50 text-brick-700",
+  /** Solid logo colors, for things that need attention at a glance. */
+  brick: "bg-brick-600 text-white",
+  goldSolid: "bg-gold-500 text-navy-900",
 } as const;
 
 export function Badge({ children, tone = "gray" }: { children: React.ReactNode; tone?: keyof typeof tones }) {
@@ -71,10 +74,10 @@ export function Td({ children, className }: { children?: React.ReactNode; classN
 }
 
 export const inquiryStatus = {
-  new: { label: "New", tone: "gold" },
+  new: { label: "New", tone: "brick" },
   contacted: { label: "Contacted", tone: "navy" },
   site_visit: { label: "Site visit", tone: "navy" },
-  quoted: { label: "Quoted", tone: "navy" },
+  quoted: { label: "Quoted", tone: "goldSolid" },
   won: { label: "Won", tone: "green" },
   lost: { label: "Lost", tone: "red" },
   closed: { label: "Closed", tone: "gray" },

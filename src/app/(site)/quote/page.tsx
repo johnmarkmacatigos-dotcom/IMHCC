@@ -21,7 +21,7 @@ export default async function QuotePage({ searchParams }: Props) {
     <div className="bg-mist">
       <div className="container-site flex flex-wrap items-start gap-10 py-12 sm:py-16">
         <div className="flex min-w-0 flex-[1_1_320px] flex-col gap-5">
-          <span className="eyebrow">Free quotation</span>
+          <span className="self-start rounded-full bg-brick-600 px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-[0.12em] text-white shadow-[0_0_0_4px_rgba(207,68,54,0.25)]">Free quotation</span>
           <h1 className="text-4xl leading-tight sm:text-[42px]">Tell us about your project</h1>
           <p className="text-lg leading-relaxed text-gray-600">
             Share a few details and photos of your space. Our team will review it and contact you to schedule a free site visit.
@@ -34,10 +34,15 @@ export default async function QuotePage({ searchParams }: Props) {
           <div className="relative h-72 overflow-hidden rounded-xl">
             <Image src="/images/projects/condo-wood-desk-kitchenette.jpg" alt="Condo unit with wood desk and kitchenette by Iloilo Modern Homes" fill sizes="(min-width: 1024px) 420px, 100vw" className="object-cover" />
           </div>
-          <ol className="flex list-decimal flex-col gap-2.5 pl-5 text-[15px] leading-relaxed text-gray-700">
-            <li>You send your request and get a reference number.</li>
-            <li>We call you to discuss and schedule a free site visit.</li>
-            <li>You receive a detailed quotation.</li>
+          <ol className="flex flex-col gap-3 text-[15px] leading-relaxed text-gray-700">
+            {["You send your request and get a reference number.", "We call you to discuss and schedule a free site visit.", "You receive a detailed quotation."].map((step, i) => (
+              <li key={step} className="flex items-start gap-3">
+                <span aria-hidden className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gold-500 text-sm font-bold text-navy-900">
+                  {i + 1}
+                </span>
+                <span className="pt-0.5">{step}</span>
+              </li>
+            ))}
           </ol>
           {settings.phone_primary && (
             <p className="text-[15px] text-gray-700">

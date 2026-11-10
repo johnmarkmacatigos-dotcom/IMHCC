@@ -30,12 +30,12 @@ export default async function Overview({ searchParams }: { searchParams: Promise
   ]);
 
   const stats = [
-    { label: "New inquiries", value: newCount, href: "/admin/inquiries?status=new", highlight: newCount > 0 },
-    { label: "Inquiries this month", value: monthCount, href: "/admin/inquiries" },
-    { label: "Open quotations", value: openQuotes, href: "/admin/inquiries?type=quotation&status=open" },
-    { label: "Jobs won this month", value: wonMonth, href: "/admin/inquiries?status=won" },
-    { label: "Projects on the website", value: published, href: "/admin/projects", hide: !s.can.edit },
-    { label: "Testimonials to review", value: pendingReviews, href: "/admin/testimonials", hide: !s.can.edit, highlight: pendingReviews > 0 },
+    { label: "New inquiries", value: newCount, href: "/admin/inquiries?status=new", highlight: newCount > 0, accent: "border-brick-600" },
+    { label: "Inquiries this month", value: monthCount, href: "/admin/inquiries", accent: "border-navy-800" },
+    { label: "Open quotations", value: openQuotes, href: "/admin/inquiries?type=quotation&status=open", accent: "border-gold-500" },
+    { label: "Jobs won this month", value: wonMonth, href: "/admin/inquiries?status=won", accent: "border-gold-500" },
+    { label: "Projects on the website", value: published, href: "/admin/projects", hide: !s.can.edit, accent: "border-navy-800" },
+    { label: "Testimonials to review", value: pendingReviews, href: "/admin/testimonials", hide: !s.can.edit, highlight: pendingReviews > 0, accent: "border-brick-600" },
   ].filter((x) => !x.hide);
 
   const firstName = (s.profile.full_name ?? "").split(" ")[0];
@@ -44,7 +44,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
     <>
       <PageHeader title={firstName ? `Hello, ${firstName}` : "Overview"} intro="Here is what is happening with the business today." />
       {denied && (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+        <p role="alert" className="rounded-lg bg-brick-50 px-4 py-3 text-sm font-medium text-brick-700">
           Your role does not include that page. Ask the owner if you need access.
         </p>
       )}
@@ -54,9 +54,9 @@ export default async function Overview({ searchParams }: { searchParams: Promise
           <Link
             key={st.label}
             href={st.href}
-            className={`flex flex-col gap-1 rounded-xl bg-white p-5 shadow-sm ring-1 transition hover:ring-navy-800 ${st.highlight ? "ring-gold-500" : "ring-gray-200"}`}
+            className={`flex flex-col gap-1 rounded-xl border-t-4 bg-white p-5 shadow-sm ring-1 transition hover:ring-navy-800 ${st.accent} ${st.highlight ? "ring-brick-500" : "ring-gray-200"}`}
           >
-            <span className="font-display text-3xl font-semibold text-navy-800">{st.value}</span>
+            <span className={`font-display text-3xl font-semibold ${st.highlight ? "text-brick-600" : "text-navy-800"}`}>{st.value}</span>
             <span className="text-sm text-gray-600">{st.label}</span>
           </Link>
         ))}

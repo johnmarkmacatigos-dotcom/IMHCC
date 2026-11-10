@@ -1,3 +1,4 @@
+import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
@@ -8,8 +9,8 @@ export const metadata = { title: "Hardware products" };
 
 const stockLabels = {
   in_stock: { label: "In stock", tone: "green" },
-  low_stock: { label: "Low stock", tone: "gold" },
-  out_of_stock: { label: "Out of stock", tone: "red" },
+  low_stock: { label: "Low stock", tone: "goldSolid" },
+  out_of_stock: { label: "Out of stock", tone: "brick" },
   made_to_order: { label: "Made to order", tone: "navy" },
 } as const;
 
@@ -39,7 +40,9 @@ export default async function ProductsPage() {
                 </Link>
                 {x.sku && <span className="text-[13px] text-gray-500">SKU {x.sku}</span>}
               </Td>
-              <Td>{x.category}</Td>
+              <Td>
+                <CategoryTag category={x.category} />
+              </Td>
               <Td className="whitespace-nowrap">{x.price_on_request || x.price == null ? "On request" : `${formatPeso(x.price)}${x.price_unit ? ` / ${x.price_unit}` : ""}`}</Td>
               <Td>
                 <span className="flex flex-wrap items-center gap-2">

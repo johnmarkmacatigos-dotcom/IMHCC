@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Construction, renovation, modular kitchens, interior fit-outs, ceilings, bathrooms, electrical, plumbing, roofing, flooring, and painting in Iloilo.",
 };
 
+const groupBar = ["bg-gold-500", "bg-brick-600", "bg-navy-800"];
+
 export default async function ServicesPage() {
   const [services, s] = await Promise.all([getServices(), getSettings()]);
   const categories = [...new Set(services.map((x) => x.category))];
@@ -17,9 +19,10 @@ export default async function ServicesPage() {
     <>
       <PageHero eyebrow="Services" title="Everything your home or business needs, from one team" intro="From the foundation to the final coat of paint, we handle the whole job or just the part you need." />
       <div className="container-site flex flex-col gap-16 py-16">
-        {categories.map((cat) => (
+        {categories.map((cat, i) => (
           <section key={cat} className="flex flex-col gap-6" aria-labelledby={`cat-${cat}`}>
-            <h2 id={`cat-${cat}`} className="text-2xl sm:text-3xl">
+            <h2 id={`cat-${cat}`} className="flex items-center gap-3 text-2xl sm:text-3xl">
+              <span aria-hidden className={`h-7 w-1.5 rounded-full ${groupBar[i % groupBar.length]}`} />
               {cat}
             </h2>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
