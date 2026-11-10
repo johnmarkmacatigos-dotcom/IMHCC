@@ -10,6 +10,9 @@
   --color-gold-300: #e9c46a;
   --color-gold-100: #f6eedc;
   --color-gold-700: #8a6516;
+  /* Brick red from the logo outline, used sparingly as an accent */
+  --color-brick-600: #b83227;
+  --color-brick-500: #cf4436;
   --color-ink: #1f2937;
   --color-mist: #f3f4f6;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

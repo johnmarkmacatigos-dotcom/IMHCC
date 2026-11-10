@@ -65,7 +65,7 @@ export function SiteHeader({ phone, messengerUrl, serviceArea }: Props) {
                 <Phone className="size-5" aria-hidden />
               </a>
             )}
-            <Link href="/quote" className="btn-navy hidden sm:inline-flex">
+            <Link href="/quote" className="btn-gold hidden sm:inline-flex">
               Request a free quote
             </Link>
             <button
