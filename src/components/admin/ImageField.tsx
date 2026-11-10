@@ -1,4 +1,5 @@
 "use client";
+import { buckets } from "@/lib/supabase/env";
 
 import { useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
@@ -7,7 +8,7 @@ import { getBrowserClient } from "@/lib/supabase/browser";
 const ACCEPT = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 8 * 1024 * 1024;
 
-/** Uploads a picture to the public "media" bucket and returns its web address. */
+/** Uploads a picture to the public media bucket and returns its web address. */
 export async function uploadMedia(file: File, folder: string): Promise<string> {
   if (!ACCEPT.includes(file.type)) throw new Error(`${file.name}: use a JPG, PNG, or WebP picture.`);
   if (file.size > MAX_BYTES) throw new Error(`${file.name} is larger than 8 MB. Please use a smaller picture.`);
@@ -15,9 +16,9 @@ export async function uploadMedia(file: File, folder: string): Promise<string> {
   if (!db) throw new Error("The database is not connected yet.");
   const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
   const path = `${folder}/${crypto.randomUUID()}.${ext}`;
-  const { error } = await db.storage.from("media").upload(path, file, { contentType: file.type, cacheControl: "31536000", upsert: false });
+  const { error } = await db.storage.from(buckets.media).upload(path, file, { contentType: file.type, cacheControl: "31536000", upsert: false });
   if (error) throw new Error("The picture could not be uploaded. Check your connection and try again.");
-  return db.storage.from("media").getPublicUrl(path).data.publicUrl;
+  return db.storage.from(buckets.media).getPublicUrl(path).data.publicUrl;
 }
 
 /** Picture picker for forms: uploads right away, then saves the address with the form. */

@@ -1,4 +1,5 @@
 "use client";
+import { buckets } from "@/lib/supabase/env";
 
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -80,7 +81,7 @@ export function InquiryForm({ type, services = [], defaultService, productId, pr
     for (const [i, f] of files.entries()) {
       const ext = (f.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "jpg";
       const path = `${folder}/photo-${i + 1}.${ext}`;
-      const { error } = await db.storage.from("inquiry-uploads").upload(path, f, { contentType: f.type, upsert: false });
+      const { error } = await db.storage.from(buckets.inquiryUploads).upload(path, f, { contentType: f.type, upsert: false });
       if (error) throw new Error("A photo could not be uploaded. Please try again with smaller photos.");
       paths.push(path);
     }

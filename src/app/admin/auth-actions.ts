@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getServerClient } from "@/lib/supabase/server";
@@ -12,6 +13,13 @@ function safeNext(value: FormDataEntryValue | null) {
   return v.startsWith("/admin") && !v.startsWith("//") ? v : "/admin";
 }
 
+async function siteOrigin(path: string) {
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  const base = host ? `${h.get("x-forwarded-proto") ?? "https"}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL ?? "");
+  return `${base}${path}`;
+}
+
 export async function signIn(_: FormState, fd: FormData): Promise<FormState> {
   const db = await getServerClient();
   if (!db) return { error: "The dashboard is not connected to the database yet." };
@@ -19,6 +27,9 @@ export async function signIn(_: FormState, fd: FormData): Promise<FormState> {
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const { error } = await db.auth.signInWithPassword(parsed.data);
   if (error) return { error: error.message.includes("confirm") ? "Please confirm your email first, using the link we sent you." : "Wrong email or password." };
+  // The sign-in account may come from another app on the same Supabase project.
+  // join_team() gives it a dashboard profile (waiting for access) if it has none yet.
+  await db.rpc("join_team");
   redirect(safeNext(fd.get("next")));
 }
 
@@ -36,9 +47,11 @@ export async function signUp(_: FormState, fd: FormData): Promise<FormState> {
   const { data, error } = await db.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { data: { full_name: parsed.data.full_name } },
+    // The Supabase project may be shared with other apps, so send the confirmation link
+    // back to this website rather than the project's default Site URL.
+    options: { data: { full_name: parsed.data.full_name, app: "imhcc" }, emailRedirectTo: await siteOrigin("/admin/auth/confirm") },
   });
-  if (error) return { error: error.message.includes("registered") ? "That email already has an account. Sign in instead." : "Could not create the account. Please try again." };
+  if (error) return { error: error.message.includes("registered") ? "That email already has an account. Sign in with its password instead." : "Could not create the account. Please try again." };
   if (!data.session) return { message: "Account created. Check your email for the confirmation link, then sign in." };
   redirect("/admin");
 }
