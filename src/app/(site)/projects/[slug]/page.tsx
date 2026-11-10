@@ -26,10 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const phaseLabels: Record<PhotoPhase, { title: string; note: string }> = {
-  before: { title: "Before", note: "The space before work started" },
-  during: { title: "During", note: "Construction in progress" },
-  after: { title: "After", note: "Completed and handed over" },
+const phaseLabels: Record<PhotoPhase, { title: string; note: string; tone: string }> = {
+  before: { title: "Before", note: "The space before work started", tone: "bg-navy-800 text-white" },
+  during: { title: "During", note: "Construction in progress", tone: "bg-brick-600 text-white" },
+  after: { title: "After", note: "Completed and handed over", tone: "bg-gold-500 text-navy-900" },
 };
 
 export default async function ProjectPage({ params }: Props) {
@@ -97,11 +97,11 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           )}
         </div>
-        <aside aria-label="Project details" className="flex min-w-0 flex-[1_1_300px] flex-col gap-4 self-start rounded-xl bg-mist p-7">
+        <aside aria-label="Project details" className="flex min-w-0 flex-[1_1_300px] flex-col gap-4 self-start rounded-xl border-t-4 border-gold-500 bg-mist p-7">
           {facts.map((f) => (
             <div key={f.label} className="flex justify-between gap-3 text-[15px]">
               <span className="text-gray-600">{f.label}</span>
-              <strong className="text-right text-navy-800">{f.value}</strong>
+              {f.label === "Project type" ? <CategoryTag category={f.value!} /> : <strong className="text-right text-navy-800">{f.value}</strong>}
             </div>
           ))}
           <Link href={`/quote?project=${encodeURIComponent(project.title)}`} className="btn-gold mt-2">
@@ -119,8 +119,8 @@ export default async function ProjectPage({ params }: Props) {
             </div>
             {phases.map((ph) => (
               <div key={ph} className="flex flex-col gap-4">
-                <div className="flex flex-col">
-                  <h3 className="text-xl">{phaseLabels[ph].title}</h3>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h3 className={`rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-[0.08em] ${phaseLabels[ph].tone}`}>{phaseLabels[ph].title}</h3>
                   <span className="text-sm text-gray-600">{phaseLabels[ph].note}</span>
                 </div>
                 <PhotoGallery photos={photos.filter((x) => x.phase === ph)} title={`${project.title}, ${ph}`} compact />

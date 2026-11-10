@@ -13,6 +13,8 @@
   /* Brick red from the logo outline, used sparingly as an accent */
   --color-brick-600: #b83227;
   --color-brick-500: #cf4436;
+  --color-brick-700: #962820;
+  --color-brick-50: #fbeae8;
   --color-ink: #1f2937;
   --color-mist: #f3f4f6;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

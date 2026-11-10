@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/admin/session";
 export const metadata = { title: "Testimonials" };
 
 type Row = { id: string; customer_name: string; customer_town: string | null; quote: string; rating: number | null; status: "pending" | "approved" | "hidden"; consent_given: boolean; is_featured: boolean };
-const statusBadge = { pending: { label: "To review", tone: "gold" }, approved: { label: "Shown", tone: "green" }, hidden: { label: "Hidden", tone: "gray" } } as const;
+const statusBadge = { pending: { label: "To review", tone: "brick" }, approved: { label: "Shown", tone: "green" }, hidden: { label: "Hidden", tone: "gray" } } as const;
 
 export default async function TestimonialsPage() {
   const s = await requireAdmin("edit");
@@ -48,7 +48,7 @@ export default async function TestimonialsPage() {
                 <span className="flex flex-wrap gap-1.5">
                   <Badge tone={statusBadge[t.status].tone}>{statusBadge[t.status].label}</Badge>
                   {!t.consent_given && <Badge tone="red">No consent</Badge>}
-                  {t.is_featured && <Badge tone="gold">Featured</Badge>}
+                  {t.is_featured && <Badge tone="goldSolid">Featured</Badge>}
                 </span>
               </Td>
             </tr>

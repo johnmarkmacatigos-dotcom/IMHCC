@@ -57,7 +57,7 @@ export function ImageField({ name, label, folder, defaultValue, hint }: { name: 
             <input type="file" accept={ACCEPT.join(",")} className="sr-only" disabled={busy} onChange={(e) => onPick(e.target.files?.[0])} />
           </label>
           {url && (
-            <button type="button" onClick={() => setUrl("")} className="inline-flex items-center gap-1.5 text-sm font-medium text-red-700 hover:underline">
+            <button type="button" onClick={() => setUrl("")} className="inline-flex items-center gap-1.5 text-sm font-medium text-brick-600 hover:underline">
               <Trash2 className="size-4" aria-hidden /> Remove
             </button>
           )}

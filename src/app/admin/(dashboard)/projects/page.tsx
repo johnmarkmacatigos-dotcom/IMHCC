@@ -1,3 +1,4 @@
+import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
@@ -45,12 +46,14 @@ export default async function ProjectsPage() {
                   </span>
                 </Link>
               </Td>
-              <Td>{p.category}</Td>
+              <Td>
+                <CategoryTag category={p.category} />
+              </Td>
               <Td>{p.photos[0]?.count ?? 0}</Td>
               <Td>
                 <span className="flex flex-wrap gap-1.5">
                   {p.is_published ? <Badge tone="green">Shown</Badge> : <Badge>Draft</Badge>}
-                  {p.is_featured && <Badge tone="gold">Featured</Badge>}
+                  {p.is_featured && <Badge tone="goldSolid">Featured</Badge>}
                 </span>
               </Td>
             </tr>

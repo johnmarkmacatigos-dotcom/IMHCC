@@ -17,7 +17,7 @@ export default async function PromotionsPage() {
         {promos.length === 0 ? (
           <div className="flex flex-col items-start gap-4 rounded-xl border border-dashed border-gray-300 p-8">
             <p className="text-lg text-gray-600">No active promos right now. Follow our Facebook page or check back soon.</p>
-            <Link href="/quote" className="btn-navy">
+            <Link href="/quote" className="btn-gold">
               Request a free quotation
             </Link>
           </div>
@@ -33,7 +33,7 @@ export default async function PromotionsPage() {
                 <div className="flex flex-col gap-3 p-6">
                   <h2 className="text-2xl">{p.title}</h2>
                   {(p.starts_on || p.ends_on) && (
-                    <p className="text-sm font-semibold text-gold-700">
+                    <p className="self-start rounded-full bg-brick-600 px-3 py-1 text-[12px] font-bold uppercase tracking-[0.08em] text-white">
                       {p.ends_on ? `Until ${formatDate(p.ends_on)}` : `Starting ${formatDate(p.starts_on!)}`}
                     </p>
                   )}

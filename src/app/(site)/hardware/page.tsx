@@ -15,9 +15,9 @@ export const metadata: Metadata = {
 
 const stockLabel: Record<StockStatus, { text: string; cls: string }> = {
   in_stock: { text: "In stock", cls: "bg-[#e7f3ec] text-[#1e6b3e]" },
-  low_stock: { text: "Low stock", cls: "bg-gold-100 text-[#6b4e12]" },
-  out_of_stock: { text: "Out of stock", cls: "bg-gray-200 text-gray-700" },
-  made_to_order: { text: "Made to order", cls: "bg-navy-100 text-navy-800" },
+  low_stock: { text: "Low stock", cls: "bg-gold-500 text-navy-900" },
+  out_of_stock: { text: "Out of stock", cls: "bg-brick-600 text-white" },
+  made_to_order: { text: "Made to order", cls: "bg-navy-800 text-white" },
 };
 
 export default async function HardwarePage() {
