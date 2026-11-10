@@ -106,3 +106,31 @@
     scroll-behavior: auto;
   }
 }
+
+/* Announcement ticker: the track holds the items twice, so sliding it left by half loops seamlessly. */
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ticker-track {
+  animation: ticker var(--ticker-duration, 40s) linear infinite;
+}
+.ticker:hover .ticker-track,
+.ticker:focus-within .ticker-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+  .ticker-copy {
+    display: none;
+  }
+  .ticker-viewport {
+    overflow-x: auto;
+  }
+}
