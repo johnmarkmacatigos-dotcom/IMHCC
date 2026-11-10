@@ -33,7 +33,9 @@ export default async function HomePage() {
       <section className="bg-navy-800 text-white">
         <div className="container-site flex flex-wrap items-center gap-8 py-10 sm:gap-12 sm:py-16 lg:py-20">
           <div className="animate-fade-up flex min-w-0 flex-[1_1_440px] flex-col gap-6">
-            <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-300">Construction · Renovation · Fit-outs</span>
+            <span className="inline-flex items-center gap-2 self-start whitespace-nowrap rounded-full bg-brick-600 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white sm:px-4 sm:tracking-[0.14em] shadow-[0_0_0_4px_rgba(207,68,54,0.25)] sm:text-[13px]">
+              Construction <span className="text-gold-300" aria-hidden>·</span> Renovation <span className="text-gold-300" aria-hidden>·</span> Fit-outs
+            </span>
             <h1 className="text-4xl leading-[1.08] text-white sm:text-[56px]">{settings.hero_title}</h1>
             <p className="max-w-xl text-lg leading-relaxed text-[#d1d9e3]">{settings.hero_subtitle}</p>
             <div className="flex flex-wrap gap-3.5 pt-2">
