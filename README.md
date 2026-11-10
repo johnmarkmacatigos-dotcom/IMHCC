@@ -14,7 +14,7 @@ Built with Next.js 15, TypeScript, Tailwind CSS, Supabase (PostgreSQL, Auth, Sto
 - Click-to-call and Messenger buttons on every page, SEO metadata, sitemap, and robots.txt
 
 **Owner dashboard (`/admin`)**
-- Sign in with email and password. The first account becomes the Owner; team members create an account at `/admin/signup` and wait until the Owner or an Admin switches on their access under **Team**
+- Sign in with email and password. Signing up with the owner email (set in `imhcc.owner_email()`, migration 0005) makes that account the Owner; team members create an account at `/admin/signup` and wait until the Owner or an Admin switches on their access under **Team**
 - Overview: new inquiries, inquiries this month, open quotations, jobs won, and the latest requests
 - Inquiries: filter, search, call/text/email buttons, customer photos, status (New → Contacted → Site visit → Quoted → Won/Lost/Closed), who handles it, and team notes
 - Projects: details, publish/feature switches, and photo uploads tagged Before, During, or After, with captions, order, and cover picture

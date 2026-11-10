@@ -12,7 +12,7 @@ export default function SignupPage() {
   return (
     <AuthCard
       title="Create your account"
-      intro="The first account becomes the owner. Accounts after that wait until the owner or an admin switches them on."
+      intro="The business owner signs up with the company email and becomes the owner. Other accounts wait until the owner or an admin switches them on."
       footer={
         <>
           Already have an account?{" "}
