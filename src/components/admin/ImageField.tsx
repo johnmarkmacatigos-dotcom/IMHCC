@@ -4,14 +4,20 @@ import { buckets } from "@/lib/supabase/env";
 import { useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase/browser";
+import { shrinkImage } from "@/lib/shrinkImage";
 
 const ACCEPT = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 8 * 1024 * 1024;
+/** Largest picture accepted from the device; it is shrunk to a few hundred KB before upload. */
+const MAX_INPUT_BYTES = 30 * 1024 * 1024;
+/** Largest file actually stored (the bucket limit is 10 MB). */
+const MAX_STORED_BYTES = 8 * 1024 * 1024;
 
-/** Uploads a picture to the public media bucket and returns its web address. */
-export async function uploadMedia(file: File, folder: string): Promise<string> {
-  if (!ACCEPT.includes(file.type)) throw new Error(`${file.name}: use a JPG, PNG, or WebP picture.`);
-  if (file.size > MAX_BYTES) throw new Error(`${file.name} is larger than 8 MB. Please use a smaller picture.`);
+/** Shrinks a picture (max 1600px, WebP), uploads it to the public media bucket, and returns its web address. */
+export async function uploadMedia(original: File, folder: string): Promise<string> {
+  if (!ACCEPT.includes(original.type)) throw new Error(`${original.name}: use a JPG, PNG, or WebP picture.`);
+  if (original.size > MAX_INPUT_BYTES) throw new Error(`${original.name} is larger than 30 MB. Please use a smaller picture.`);
+  const file = await shrinkImage(original);
+  if (file.size > MAX_STORED_BYTES) throw new Error(`${original.name} is too large even after shrinking. Please use a smaller picture.`);
   const db = getBrowserClient();
   if (!db) throw new Error("The database is not connected yet.");
   const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
