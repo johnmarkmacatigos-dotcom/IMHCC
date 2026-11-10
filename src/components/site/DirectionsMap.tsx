@@ -5,7 +5,7 @@ import { LocateFixed, Navigation } from "lucide-react";
 
 type Status = "idle" | "locating" | "route" | "denied" | "unavailable";
 
-type Props = { lat: number; lng: number; label: string };
+type Props = { lat: number; lng: number; label: string; plusCode?: string };
 
 /**
  * Shows the shop's exact pin. When the map scrolls into view it asks the browser for the
@@ -13,7 +13,7 @@ type Props = { lat: number; lng: number; label: string };
  * route from where they are to the shop. "Open in Google Maps" hands off turn-by-turn
  * navigation to the Google Maps app on phones.
  */
-export function DirectionsMap({ lat, lng, label }: Props) {
+export function DirectionsMap({ lat, lng, label, plusCode }: Props) {
   const dest = `${lat},${lng}`;
   const [origin, setOrigin] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
@@ -91,7 +91,7 @@ export function DirectionsMap({ lat, lng, label }: Props) {
         {note[status]}
         {status !== "locating" && (
           <span className="block text-gray-500">
-            Our location: {lat.toFixed(5)}, {lng.toFixed(5)}
+            Our office: {plusCode ? `${plusCode} (${lat.toFixed(6)}, ${lng.toFixed(6)})` : `${lat.toFixed(6)}, ${lng.toFixed(6)}`}
           </span>
         )}
       </p>

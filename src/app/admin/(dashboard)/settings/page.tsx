@@ -1,5 +1,5 @@
 import { AdminForm, ListField, TextArea, TextField } from "@/components/admin/Form";
-import { LocationField } from "@/components/admin/LocationField";
+import { OFFICE_LOCATION } from "@/content/office";
 import { Card, PageHeader } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import type { SiteSettings } from "@/lib/types";
@@ -26,8 +26,11 @@ export default async function SettingsPage() {
             <TextField name="messenger_url" label="Messenger link" defaultValue={x?.messenger_url} hint="Usually https://m.me/your-page-name" />
           </div>
         </Card>
-        <Card>
-          <LocationField lat={x?.latitude ?? null} lng={x?.longitude ?? null} />
+        <Card title="Office map pin">
+          <p className="text-sm text-gray-600">
+            The contact page map always gives directions to the office at {OFFICE_LOCATION.plusCode} ({OFFICE_LOCATION.lat},{" "}
+            {OFFICE_LOCATION.lng}). It is set in the website code, so ask your developer if the office moves.
+          </p>
         </Card>
         <Card title="Homepage">
           <div className="flex flex-col gap-5">
