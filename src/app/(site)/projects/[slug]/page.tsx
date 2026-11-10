@@ -1,3 +1,4 @@
+import { CategoryTag } from "@/components/site/CategoryTag";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -64,8 +65,8 @@ export default async function ProjectPage({ params }: Props) {
           <span className="text-navy-800">{project.title}</span>
         </nav>
         <div className="flex flex-wrap gap-2.5">
-          <span className="rounded-full bg-navy-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">{project.status}</span>
-          <span className="rounded-full bg-gold-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-[#6b4e12]">{project.category}</span>
+          <span className="rounded-full border-[1.5px] border-navy-800 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-navy-800">{project.status}</span>
+          <CategoryTag category={project.category} />
         </div>
         <h1 className="text-4xl leading-tight sm:text-5xl">{project.title}</h1>
         {project.summary && <p className="max-w-3xl text-lg text-gray-600">{project.summary}</p>}
