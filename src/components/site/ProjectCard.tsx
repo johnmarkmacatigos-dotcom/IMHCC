@@ -1,3 +1,4 @@
+import { CategoryTag } from "./CategoryTag";
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/types";
@@ -22,8 +23,8 @@ export function ProjectCard({ project, priority }: { project: Project; priority?
           </span>
         )}
       </div>
-      <div className="flex flex-col gap-1">
-        <span className="text-[13px] font-semibold uppercase tracking-[0.08em] text-gold-700">{project.category}</span>
+      <div className="flex flex-col gap-1.5">
+        <CategoryTag category={project.category} />
         <span className="font-display text-lg font-semibold text-navy-800 group-hover:underline">{project.title}</span>
         {project.location && <span className="text-sm text-gray-500">{project.location}</span>}
       </div>
