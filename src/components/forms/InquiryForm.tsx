@@ -9,6 +9,7 @@ import Link from "next/link";
 import { getPublicClient } from "@/lib/supabase/public";
 import type { InquiryType } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { shrinkImage } from "@/lib/shrinkImage";
 import { ALLOWED_PHOTO_TYPES, MAX_PHOTO_BYTES, MAX_PHOTOS, inquirySchema, type InquiryInput } from "@/lib/validation";
 
 type Props = {
@@ -78,7 +79,8 @@ export function InquiryForm({ type, services = [], defaultService, productId, pr
     if (!db) throw new Error("Photo uploads are not connected yet. Please send your request without photos, or message us on Messenger.");
     const folder = crypto.randomUUID();
     const paths: string[] = [];
-    for (const [i, f] of files.entries()) {
+    for (const [i, original] of files.entries()) {
+      const f = await shrinkImage(original, { maxSide: 2000 });
       const ext = (f.name.split(".").pop() ?? "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 5) || "jpg";
       const path = `${folder}/photo-${i + 1}.${ext}`;
       const { error } = await db.storage.from(buckets.inquiryUploads).upload(path, f, { contentType: f.type, upsert: false });
