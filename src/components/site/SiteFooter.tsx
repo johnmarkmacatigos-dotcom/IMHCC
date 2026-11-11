@@ -3,6 +3,7 @@ import type { SiteSettings } from "@/lib/types";
 import { telHref } from "@/lib/utils";
 import { WHATSAPP_NUMBER, whatsappHref } from "@/content/business";
 import { mainNav } from "./nav";
+import { DeveloperCredit } from "./DeveloperCredit";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   return (
@@ -68,7 +69,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           </ul>
         </div>
       </div>
-      <div className="container-site flex flex-wrap justify-between gap-3 border-t border-[#1e3352] pt-6 pb-28 text-[13px]">
+      <div className="container-site flex flex-wrap justify-between gap-3 border-t border-[#1e3352] py-6 text-[13px]">
         <span>
           © {new Date().getFullYear()} {settings.company_name}
         </span>
@@ -88,6 +89,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           </a>
         </span>
       </div>
+      <DeveloperCredit />
     </footer>
   );
 }
