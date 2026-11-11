@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { HeroPhotos } from "@/components/site/HeroPhotos";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { CtaBand } from "@/components/site/CtaBand";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { SectionHeading } from "@/components/site/SectionHeading";
@@ -80,15 +81,28 @@ export default async function HomePage() {
           ))}
         </div>
         {otherServices.length > 0 && (
-          <ul className="flex flex-wrap gap-2.5" aria-label="More services">
-            {otherServices.map((s) => (
-              <li key={s.id}>
-                <Link href={`/services/${s.slug}`} className="inline-block rounded-full bg-mist px-4 py-2 text-sm text-navy-800 hover:bg-navy-100">
-                  {s.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="rounded-xl border border-gold-500/40 bg-gold-100/60 p-3 sm:p-4">
+            <p className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-navy-800">
+              <span aria-hidden className="size-2 rounded-full bg-brick-600 shadow-[0_0_0_3px_rgba(207,68,54,0.25)]" />
+              More services
+            </p>
+            <ul className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4" aria-label="More services">
+              {otherServices.map((s, i) => (
+                <li key={s.id}>
+                  <Link
+                    href={`/services/${s.slug}`}
+                    className={cn(
+                      "group flex h-full min-h-9 items-center justify-between gap-1 rounded-md border-l-[3px] bg-white px-2 py-1.5 text-[11.5px] font-semibold leading-tight sm:px-2.5 sm:text-[12.5px] text-navy-800 shadow-sm transition-colors hover:bg-navy-800 hover:text-white",
+                      ["border-gold-500", "border-navy-800", "border-brick-600"][i % 3],
+                    )}
+                  >
+                    <span>{s.name}</span>
+                    <ChevronRight className="hidden size-3 shrink-0 text-gold-700 sm:block group-hover:text-gold-300" aria-hidden />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </section>
 
