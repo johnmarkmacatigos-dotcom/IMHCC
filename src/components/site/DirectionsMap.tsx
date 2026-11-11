@@ -63,7 +63,7 @@ export function DirectionsMap({ lat, lng, label, plusCode }: Props) {
     idle: "",
     locating: "Finding your location…",
     route: "Showing the route from your current location.",
-    denied: "Location access is off, so we're showing our pin only. Allow location to see the route.",
+    denied: "Location access is off, so we're showing our pin only.",
     unavailable: "We couldn't get your location. Use the button to open directions in Google Maps.",
   };
 
@@ -87,8 +87,18 @@ export function DirectionsMap({ lat, lng, label, plusCode }: Props) {
           </button>
         )}
       </div>
+      {status === "denied" && (
+        <div role="status" className="ux-in flex flex-col gap-2 rounded-xl bg-brick-50 p-4 text-sm text-gray-700">
+          <strong className="text-brick-700">Location permission is turned off for this site</strong>
+          <span>That&apos;s fine. You can still get directions: tap &quot;Get directions in Google Maps&quot; and it will use your phone&apos;s location there.</span>
+          <span>
+            To see the route here, allow location: tap the lock or <span aria-hidden>ⓘ</span> icon next to the website address, set Location to Allow, then
+            tap &quot;Use my location&quot;.
+          </span>
+        </div>
+      )}
       <p className="text-sm text-gray-600" aria-live="polite">
-        {note[status]}
+        {status !== "denied" && note[status]}
         {status !== "locating" && (
           <span className="block text-gray-500">
             Our office: {plusCode ? `${plusCode} (${lat.toFixed(6)}, ${lng.toFixed(6)})` : `${lat.toFixed(6)}, ${lng.toFixed(6)}`}

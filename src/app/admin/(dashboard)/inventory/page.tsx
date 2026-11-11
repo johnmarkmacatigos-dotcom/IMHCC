@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Boxes, Plus, Search } from "lucide-react";
 import { CountUp } from "@/components/admin/motion";
 import { MoveIcon, StockDialog, StockMeter } from "@/components/admin/StockDialog";
-import { Badge, EmptyState, PageHeader, Table, Td, timeAgo } from "@/components/admin/ui";
+import { Badge, EmptyState, LoadError, NoResults, PageHeader, Table, Td, timeAgo } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import { formatQty, inventoryKinds, meterScale, stockStates, type InventoryLevel, type Movement } from "@/lib/inventory";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,7 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
     .slice(0, 60);
   if (term) q = q.or(`name.ilike.%${term}%,sku.ilike.%${term}%,category.ilike.%${term}%,location.ilike.%${term}%`);
 
-  const [{ data: items }, { data: all }, { data: moves }, { data: projects }] = await Promise.all([
+  const [{ data: items, error: itemsError }, { data: all }, { data: moves }, { data: projects }] = await Promise.all([
     q.returns<InventoryLevel[]>(),
     s.db
       .from("inventory_levels")
@@ -152,7 +152,9 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
             </form>
           </div>
 
-          {items && items.length > 0 ? (
+          {itemsError ? (
+            <LoadError retryHref={link({})} what="inventory" />
+          ) : items && items.length > 0 ? (
             <>
               {/* Phones: one card per item, so names and quick buttons stay readable. */}
               <ul className="admin-stagger flex flex-col gap-2 md:hidden">
@@ -229,16 +231,36 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
                 </Table>
               </div>
             </>
+          ) : term || sp.kind || sp.state || archived ? (
+            <NoResults
+              term={term}
+              clearHref={link({ q: undefined, kind: undefined, state: undefined })}
+              tips={[
+                term ? "Check the spelling, or search a shorter word (for example “panel” instead of “PVC wall panels”)." : "Try another type or show all items.",
+                "You can search by name, SKU, category, or storage location.",
+                archived ? "This list only shows archived items." : "Archived items are hidden. Use “Show archived items” below to look there too.",
+              ]}
+              extra={
+                s.can.edit && term ? (
+                  <Link href={`/admin/inventory/new?name=${encodeURIComponent(term)}`} className="btn-outline">
+                    Add “{term}” as a new item
+                  </Link>
+                ) : undefined
+              }
+            />
           ) : (
-            <EmptyState>
-              {term || sp.kind || sp.state || archived ? (
-                "Nothing matches. Try another filter."
-              ) : (
-                <>
-                  <Boxes className="mx-auto mb-3 size-8 text-gold-500" aria-hidden />
-                  No items yet. Add the materials, products, and tools you keep, then record stock in and out as it moves.
-                </>
-              )}
+            <EmptyState
+              icon={Boxes}
+              title="Start tracking your stock"
+              action={
+                s.can.edit ? (
+                  <Link href="/admin/inventory/new" className="btn-gold">
+                    <Plus className="size-4" aria-hidden /> Add your first item
+                  </Link>
+                ) : undefined
+              }
+            >
+              Add the materials, products, and tools you keep, then record stock in and out as it moves. We&apos;ll warn you when something runs low.
             </EmptyState>
           )}
           <Link

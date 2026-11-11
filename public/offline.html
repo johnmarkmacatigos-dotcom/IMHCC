@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#142B46" />
+<title>You're offline | Iloilo Modern Homes Construction Co.</title>
+<style>
+  :root { --navy: #142b46; --gold: #c99a35; --gold-300: #e9c46a; --brick: #b83227; --mist: #f3f4f6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 24px 16px;
+    background: var(--mist); color: #1f2937; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .card { position: relative; overflow: hidden; width: 100%; max-width: 460px; background: #fff; border-radius: 20px; padding: 36px 28px 30px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / .05), 0 0 0 1px #e5e7eb; text-align: center; }
+  .card::before { content: ""; position: absolute; inset: 0 0 auto; height: 4px; background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy)); }
+  img { height: 52px; width: auto; }
+  .icon { position: relative; width: 64px; height: 64px; margin: 22px auto 14px; border-radius: 50%; background: #e6eef8; display: grid; place-items: center; animation: float 3.2s ease-in-out infinite; }
+  .icon::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #e6eef8; animation: ring 2.4s ease-out infinite; z-index: -1; }
+  .pill { display: inline-block; background: var(--navy); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
+  h1 { color: var(--navy); font-size: 26px; line-height: 1.2; margin: 12px 0 8px; }
+  p { margin: 0 0 18px; color: #4b5563; }
+  .actions { display: flex; flex-direction: column; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border-radius: 8px; font-weight: 600; text-decoration: none; border: 0; font-size: 15px; cursor: pointer; }
+  .gold { background: var(--gold); color: var(--navy); }
+  .navy { background: var(--navy); color: #fff; }
+  .outline { background: #fff; color: var(--navy); box-shadow: inset 0 0 0 1.5px var(--navy); }
+  small { display: block; margin-top: 16px; color: #6b7280; font-size: 13px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brick); margin-right: 6px; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes float { 50% { transform: translateY(-5px); } }
+  @keyframes ring { from { transform: scale(.85); opacity: .6; } to { transform: scale(1.5); opacity: 0; } }
+  @keyframes pulse { 50% { opacity: .3; } }
+  @media (prefers-reduced-motion: reduce) { .icon, .icon::before, .dot { animation: none; } }
+</style>
+</head>
+<body>
+  <main class="card">
+    <img src="/images/logo.jpg" alt="Iloilo Modern Homes Construction Co." />
+    <div class="icon" aria-hidden="true">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#142b46" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"/><path d="M8.5 16.43a5 5 0 0 1 7 0"/><path d="M5 12.86a10 10 0 0 1 5.17-2.69"/><path d="M19 12.86a10 10 0 0 0-2-1.43"/><path d="M2 8.82a15 15 0 0 1 4.18-2.65"/><path d="M22 8.82a15 15 0 0 0-11.29-3.76"/><path d="m2 2 20 20"/></svg>
+    </div>
+    <span class="pill">No internet</span>
+    <h1>You're offline right now</h1>
+    <p>This page needs the internet to load. Check your Wi-Fi or mobile data. We'll open the page by ourselves as soon as you're back.</p>
+    <div class="actions">
+      <button class="btn gold" type="button" onclick="location.reload()">Try again</button>
+      <a class="btn navy" href="tel:09173843099">Call us: 0917 384 3099</a>
+      <a class="btn outline" href="sms:09173843099">Send a text message</a>
+    </div>
+    <small id="status"><span class="dot"></span>Waiting for a connection…</small>
+  </main>
+  <script>
+    window.addEventListener("online", function () {
+      document.getElementById("status").textContent = "Back online. Opening the page…";
+      setTimeout(function () { location.reload(); }, 600);
+    });
+  </script>
+</body>
+</html>

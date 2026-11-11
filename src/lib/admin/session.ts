@@ -60,11 +60,13 @@ export const getSession = cache(async (): Promise<{ db: ServerClient; userId: st
  */
 export async function requireAdmin(level: "team" | "edit" | "manage" | "owner" = "team"): Promise<AdminSession> {
   const session = await getSession();
-  if (!session) redirect("/admin/login");
+  // Pages are already guarded by the middleware, so getting here signed out means the sign-in
+  // ran out mid-visit (for example while a form was being saved).
+  if (!session) redirect("/admin/login?expired=1");
   if (!session.profile?.is_active) redirect("/admin/pending");
   const can = permissions(session.profile.role);
   const allowed = level === "team" || (level === "edit" && can.edit) || (level === "manage" && can.manage) || (level === "owner" && can.owner);
-  if (!allowed) redirect("/admin?denied=1");
+  if (!allowed) redirect(`/admin?denied=${level}`);
   return { db: session.db, userId: session.userId, profile: session.profile, can };
 }
 

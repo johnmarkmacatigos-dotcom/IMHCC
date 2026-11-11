@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+import { NavProgress } from "@/components/admin/motion";
+import { ConnectionStatus } from "@/components/states/ConnectionStatus";
 import { AnnouncementBar, buildAnnouncements } from "@/components/site/AnnouncementBar";
 import { ContactDock } from "@/components/site/ContactDock";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -12,6 +15,10 @@ export async function PublicChrome({ children }: { children: React.ReactNode }) 
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2">
         Skip to content
       </a>
+      <Suspense>
+        <NavProgress scope="/" />
+      </Suspense>
+      <ConnectionStatus registerOfflinePage phone={settings.phone_primary ?? undefined} />
       <AnnouncementBar items={buildAnnouncements(promotions)} />
       <SiteHeader
         phone={settings.phone_primary}
