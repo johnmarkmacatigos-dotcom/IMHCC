@@ -1,6 +1,6 @@
+import { Plus, Wrench } from "lucide-react";
 import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 
@@ -44,7 +44,17 @@ export default async function ServicesPage() {
           ))}
         </Table>
       ) : (
-        <EmptyState>No services yet.</EmptyState>
+        <EmptyState
+          icon={Wrench}
+          title="List the work you do"
+          action={
+            <Link href="/admin/services/new" className="btn-gold">
+              Add a service
+            </Link>
+          }
+        >
+          Services fill the website&apos;s Services page and the choices on the quotation form.
+        </EmptyState>
       )}
     </>
   );

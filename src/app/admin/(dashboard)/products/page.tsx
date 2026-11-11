@@ -1,6 +1,6 @@
+import { Package, Plus } from "lucide-react";
 import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import { formatPeso } from "@/lib/utils";
@@ -55,7 +55,17 @@ export default async function ProductsPage() {
           ))}
         </Table>
       ) : (
-        <EmptyState>No products yet.</EmptyState>
+        <EmptyState
+          icon={Package}
+          title="Your hardware catalog is empty"
+          action={
+            <Link href="/admin/products/new" className="btn-gold">
+              Add a product
+            </Link>
+          }
+        >
+          Add the materials you sell with a photo, price, and stock label. Customers can ask about each one from the website.
+        </EmptyState>
       )}
     </>
   );

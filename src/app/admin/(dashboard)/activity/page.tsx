@@ -1,3 +1,4 @@
+import { History } from "lucide-react";
 import Link from "next/link";
 import { EmptyState, PageHeader, Table, Td, dateTime } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
@@ -61,7 +62,9 @@ export default async function ActivityPage({ searchParams }: { searchParams: Pro
           })}
         </Table>
       ) : (
-        <EmptyState>No activity yet.</EmptyState>
+        <EmptyState icon={History} title="Nothing has changed yet">
+          Every save, upload, and status change by the team will be listed here, with who did it and when.
+        </EmptyState>
       )}
       <nav className="flex justify-end gap-2">
         {page > 1 && (

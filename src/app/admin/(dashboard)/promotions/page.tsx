@@ -1,5 +1,5 @@
+import { Megaphone, Plus } from "lucide-react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import { formatDate } from "@/lib/utils";
@@ -44,7 +44,17 @@ export default async function PromotionsPage() {
           })}
         </Table>
       ) : (
-        <EmptyState>No promotions yet.</EmptyState>
+        <EmptyState
+          icon={Megaphone}
+          title="No promotions running"
+          action={
+            <Link href="/admin/promotions/new" className="btn-gold">
+              Create a promotion
+            </Link>
+          }
+        >
+          A promo shows on the Promotions page and scrolls in the gold banner at the top of every page while it&apos;s active.
+        </EmptyState>
       )}
     </>
   );

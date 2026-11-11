@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CreatedPanel } from "@/components/states/CreatedPanel";
 import { notFound } from "next/navigation";
 import { AdminForm, CheckField, ListField, SelectField, TextArea, TextField } from "@/components/admin/Form";
 import { DeleteButton } from "@/components/admin/DeleteButton";
@@ -63,7 +64,7 @@ export default async function ProjectEditor({ params, searchParams }: { params: 
           ) : undefined
         }
       />
-      {created && <p className="rounded-lg bg-[#e7f3ec] px-4 py-3 text-sm font-medium text-[#1e6b3e]">Project created. Now add the photos below.</p>}
+      {created && p && <CreatedPanel published={p.is_published} />}
 
       {p && (
         <Card title="Photos">

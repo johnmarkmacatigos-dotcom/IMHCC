@@ -4,6 +4,7 @@ import { StatusBadge, Card, EmptyState, PageHeader, inquiryStatus, inquiryType, 
 import { InquiryCharts } from "@/components/admin/Charts";
 import { CountUp } from "@/components/admin/motion";
 import { requireAdmin } from "@/lib/admin/session";
+import { DeniedPanel } from "@/components/states/DeniedPanel";
 
 export const metadata = { title: "Overview" };
 
@@ -67,11 +68,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
   return (
     <>
       <PageHeader title={firstName ? `Hello, ${firstName}` : "Overview"} intro="Here is what is happening with the business today." />
-      {denied && (
-        <p role="alert" className="rounded-lg bg-brick-50 px-4 py-3 text-sm font-medium text-brick-700">
-          Your role does not include that page. Ask the owner if you need access.
-        </p>
-      )}
+      {denied && <DeniedPanel level={denied} role={s.profile.role} />}
 
       <div className="admin-stagger grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {stats.map((st) => (

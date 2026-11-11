@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { AlertCircle, CheckCircle2, Info, X } from "lucide-react";
+import Link from "next/link";
+import { AlertCircle, ArrowRight, CheckCircle2, Info, PartyPopper, X } from "lucide-react";
+import { Confetti } from "@/components/states/Celebrate";
 import { cn } from "@/lib/utils";
 
 const prefersReducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -43,16 +45,17 @@ export function CountUp({ value, duration = 900, className }: { value: number; d
 
 /* ───────────── Toasts ───────────── */
 
-type Tone = "success" | "error" | "info";
-type ToastItem = { id: number; message: string; tone: Tone; leaving?: boolean };
+type Tone = "success" | "error" | "info" | "celebrate";
+type ToastAction = { href: string; label: string };
+type ToastItem = { id: number; message: string; tone: Tone; action?: ToastAction; leaving?: boolean };
 
 const listeners = new Set<(t: ToastItem) => void>();
 let nextId = 1;
 const PENDING_KEY = "imhcc:pending-toast";
 
 /** Show a toast from any client component. */
-export function toast(message: string, tone: Tone = "success") {
-  const item = { id: nextId++, message, tone };
+export function toast(message: string, tone: Tone = "success", action?: ToastAction) {
+  const item = { id: nextId++, message, tone, action };
   listeners.forEach((l) => l(item));
 }
 
@@ -87,6 +90,7 @@ const toneStyle = {
   success: { icon: CheckCircle2, box: "bg-navy-800 text-white", icon_: "text-gold-500", bar: "bg-gold-500" },
   error: { icon: AlertCircle, box: "bg-brick-600 text-white", icon_: "text-white", bar: "bg-white/70" },
   info: { icon: Info, box: "bg-white text-navy-800 ring-1 ring-gray-200", icon_: "text-navy-800", bar: "bg-navy-800" },
+  celebrate: { icon: PartyPopper, box: "bg-gold-500 text-navy-900", icon_: "text-navy-900", bar: "bg-navy-800" },
 } as const;
 
 export function Toaster() {
@@ -123,10 +127,13 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
   const s = toneStyle[item.tone];
   const Icon = s.icon;
   const [paused, setPaused] = useState(false);
-  const remaining = useRef(TOAST_MS);
+  // Celebrations and toasts with a next step stay longer, so there's time to read and tap.
+  const ms = item.tone === "celebrate" || item.action ? 7000 : TOAST_MS;
+  const remaining = useRef(ms);
   const startedAt = useRef(0);
   const dismissRef = useRef(onDismiss);
   dismissRef.current = onDismiss;
+
 
   useEffect(() => {
     if (paused || item.leaving) return;
@@ -140,42 +147,61 @@ function ToastCard({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
 
   return (
     <div
-      className={cn("admin-toast pointer-events-auto relative flex w-full max-w-sm items-start gap-3 overflow-hidden rounded-xl px-4 py-3.5 shadow-lg", s.box)}
+      className={cn("admin-toast pointer-events-auto relative flex w-full max-w-sm items-start gap-3 rounded-xl px-4 py-3.5 shadow-lg", item.tone !== "celebrate" && "overflow-hidden", s.box)}
       data-leaving={item.leaving || undefined}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <Icon className={cn("admin-pop mt-0.5 size-5 shrink-0", s.icon_)} aria-hidden />
-      <p className="flex-1 text-[15px] font-medium leading-snug">{item.message}</p>
+      <span className="relative mt-0.5 shrink-0">
+        {item.tone === "celebrate" && <Confetti pieces={18} />}
+        <Icon className={cn("admin-pop relative size-5", s.icon_)} aria-hidden />
+      </span>
+      <div className="flex flex-1 flex-col gap-1.5">
+        <p className="text-[15px] font-medium leading-snug">{item.message}</p>
+        {item.action && (
+          <Link href={item.action.href} onClick={onDismiss} className="group inline-flex items-center gap-1 self-start text-sm font-semibold underline underline-offset-2">
+            {item.action.label} <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+          </Link>
+        )}
+      </div>
       <button type="button" onClick={onDismiss} className="-m-1 flex size-8 shrink-0 items-center justify-center rounded-md opacity-70 hover:opacity-100" aria-label="Dismiss">
         <X className="size-4" aria-hidden />
       </button>
-      <span className={cn("admin-toast-timer absolute inset-x-0 bottom-0 h-[3px] motion-reduce:hidden", s.bar)} style={{ animationDuration: `${TOAST_MS}ms` }} aria-hidden />
+      <span className={cn("admin-toast-timer absolute inset-x-0 bottom-0 h-[3px] motion-reduce:hidden", s.bar)} style={{ animationDuration: `${ms}ms` }} aria-hidden />
     </div>
   );
 }
 
 /* ───────────── Navigation progress bar ───────────── */
 
-/** A thin gold bar along the top while the next dashboard page loads. */
-export function NavProgress() {
+/**
+ * A thin gold bar along the top while the next page loads. If the wait runs past a few
+ * seconds (slow network), a small "Still loading" note appears under it, so a long load
+ * never looks like a frozen screen. `scope` limits it to links inside the dashboard or the site.
+ */
+export function NavProgress({ scope = "/admin" }: { scope?: "/admin" | "/" }) {
   const pathname = usePathname();
   const search = useSearchParams();
   const [state, setState] = useState<"idle" | "loading" | "done">("idle");
+  const [slow, setSlow] = useState(false);
 
   useEffect(() => {
+    const inScope = (path: string) => (scope === "/admin" ? path.startsWith("/admin") : !path.startsWith("/admin"));
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as Element | null)?.closest?.("a");
       if (!a || a.target || a.hasAttribute("download")) return;
       const url = new URL(a.href, location.href);
-      if (url.origin !== location.origin || !url.pathname.startsWith("/admin")) return;
+      if (url.origin !== location.origin || !inScope(url.pathname)) return;
       if (url.pathname === location.pathname && url.search === location.search) return;
+      if (url.pathname === location.pathname && url.hash) return;
       setState("loading");
     };
     const onSubmit = (e: SubmitEvent) => {
+      // Forms handled in the page (quote form, dashboard saves) don't navigate.
+      if (e.defaultPrevented) return;
       const f = e.target as HTMLFormElement;
-      if ((f.method || "get").toLowerCase() === "get" && f.action.includes("/admin")) setState("loading");
+      if ((f.method || "get").toLowerCase() === "get" && f.action && inScope(new URL(f.action, location.href).pathname)) setState("loading");
     };
     document.addEventListener("click", onClick, true);
     document.addEventListener("submit", onSubmit);
@@ -183,7 +209,7 @@ export function NavProgress() {
       document.removeEventListener("click", onClick, true);
       document.removeEventListener("submit", onSubmit);
     };
-  }, []);
+  }, [scope]);
 
   useEffect(() => {
     setState((s) => (s === "loading" ? "done" : s));
@@ -191,20 +217,37 @@ export function NavProgress() {
 
   useEffect(() => {
     if (state === "done") {
+      setSlow(false);
       const t = setTimeout(() => setState("idle"), 600);
       return () => clearTimeout(t);
     }
     if (state === "loading") {
-      const t = setTimeout(() => setState("done"), 12_000);
-      return () => clearTimeout(t);
+      const slowTimer = setTimeout(() => setSlow(true), 3500);
+      const giveUp = setTimeout(() => setState("done"), 30_000);
+      return () => {
+        clearTimeout(slowTimer);
+        clearTimeout(giveUp);
+      };
     }
   }, [state]);
 
   if (state === "idle") return null;
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[3px]" aria-hidden>
-      <div data-state={state} className="admin-progress h-full origin-left bg-gradient-to-r from-gold-500 via-gold-300 to-gold-500 shadow-[0_0_8px_rgba(201,154,53,0.7)]" />
-    </div>
+    <>
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[70] h-[3px]" aria-hidden>
+        <div data-state={state} className="admin-progress h-full origin-left bg-gradient-to-r from-gold-500 via-gold-300 to-gold-500 shadow-[0_0_8px_rgba(201,154,53,0.7)]" />
+      </div>
+      {slow && state === "loading" && (
+        <div role="status" className="pointer-events-none fixed inset-x-0 top-3 z-[70] flex justify-center px-4">
+          <span className="ux-in flex items-center gap-2.5 rounded-full bg-navy-900/95 py-2 pl-3 pr-4 text-[13px] font-medium text-white shadow-lg">
+            <span className="relative h-1.5 w-12 overflow-hidden rounded-full bg-white/20" aria-hidden>
+              <span className="ux-indeterminate absolute inset-y-0 left-0 w-1/2 rounded-full bg-gold-300" />
+            </span>
+            Still loading. Your connection seems slow, hang tight…
+          </span>
+        </div>
+      )}
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
+import { MessageSquareQuote, Plus, Star } from "lucide-react";
 import Link from "next/link";
-import { Plus, Star } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 
@@ -55,7 +55,17 @@ export default async function TestimonialsPage() {
           ))}
         </Table>
       ) : (
-        <EmptyState>No testimonials yet. Add what happy customers said (with their permission).</EmptyState>
+        <EmptyState
+          icon={MessageSquareQuote}
+          title="No customer reviews yet"
+          action={
+            <Link href="/admin/testimonials/new" className="btn-gold">
+              Add a testimonial
+            </Link>
+          }
+        >
+          After a job, ask the customer for a few words and their permission to share them. Approved reviews show on the homepage.
+        </EmptyState>
       )}
     </>
   );

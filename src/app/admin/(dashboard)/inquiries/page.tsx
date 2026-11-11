@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { StatusBadge, EmptyState, PageHeader, Table, Td, inquiryStatus, inquiryType, timeAgo } from "@/components/admin/ui";
+import { Inbox } from "lucide-react";
+import { StatusBadge, EmptyState, LoadError, NoResults, PageHeader, Table, Td, inquiryStatus, inquiryType, timeAgo } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +37,7 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
   const term = sp.q?.trim().replace(/[%,()]/g, " ").slice(0, 60);
   if (term) q = q.or(`full_name.ilike.%${term}%,phone.ilike.%${term}%,reference_no.ilike.%${term}%,location.ilike.%${term}%`);
 
-  const { data, count } = await q.returns<Row[]>();
+  const { data, count, error } = await q.returns<Row[]>();
   const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / PAGE));
 
@@ -92,7 +93,9 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
         </form>
       </div>
 
-      {data && data.length > 0 ? (
+      {error ? (
+        <LoadError retryHref={link({})} what="inquiries" />
+      ) : data && data.length > 0 ? (
         <Table head={["Reference", "Customer", "Request", "Status", "Received"]}>
           {data.map((i) => (
             <tr key={i.id} className={cn("hover:bg-mist", i.status === "new" && "bg-gold-100/40")}>
@@ -121,8 +124,27 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
             </tr>
           ))}
         </Table>
+      ) : term || sp.status || sp.type ? (
+        <NoResults
+          term={term}
+          clearHref={term ? link({ q: undefined, page: undefined }) : "/admin/inquiries"}
+          tips={[
+            term ? "Search part of a name, the last 4 digits of a phone number, or a reference like QR-2026-0012." : "Try the All tab, or another type.",
+            sp.status || sp.type ? "Filters are on. Clear them to search every inquiry." : "Older inquiries are on later pages; searching looks through all of them.",
+          ]}
+          extra={
+            (sp.status || sp.type) && term ? (
+              <Link href={`/admin/inquiries?q=${encodeURIComponent(term)}`} className="btn-outline">
+                Search all inquiries instead
+              </Link>
+            ) : undefined
+          }
+        />
       ) : (
-        <EmptyState>No inquiries match these filters.</EmptyState>
+        <EmptyState icon={Inbox} title="No inquiries yet">
+          When customers send the quote, contact, consultation, or product forms on the website, each request lands here with a reference number. Share the
+          website link on Facebook to get the first one.
+        </EmptyState>
       )}
 
       {pages > 1 && (

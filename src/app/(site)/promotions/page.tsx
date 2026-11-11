@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Megaphone } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
+import { StatePanel } from "@/components/states/StatePanel";
 import { getPromotions } from "@/lib/data";
 import { formatDate } from "@/lib/utils";
 
@@ -15,12 +17,24 @@ export default async function PromotionsPage() {
       <PageHero eyebrow="Promotions" title="Current promos and announcements" />
       <div className="container-site py-14">
         {promos.length === 0 ? (
-          <div className="flex flex-col items-start gap-4 rounded-xl border border-dashed border-gray-300 p-8">
-            <p className="text-lg text-gray-600">No active promos right now. Follow our Facebook page or check back soon.</p>
-            <Link href="/quote" className="btn-gold">
-              Request a free quotation
-            </Link>
-          </div>
+          <StatePanel
+            tone="empty"
+            icon={Megaphone}
+            eyebrow="No promos this week"
+            title="No active promos right now, but quotes are always free"
+            actions={
+              <>
+                <Link href="/quote" className="btn-gold">
+                  Request a free quotation
+                </Link>
+                <a href="https://www.facebook.com/modernhomesrose" target="_blank" rel="noopener noreferrer" className="btn-outline">
+                  Follow us on Facebook
+                </a>
+              </>
+            }
+          >
+            New promos are posted here and on our Facebook page first. Follow us so you don&apos;t miss the next one.
+          </StatePanel>
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
             {promos.map((p) => (

@@ -1,6 +1,6 @@
+import { FolderOpen, Plus } from "lucide-react";
 import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 
@@ -60,7 +60,17 @@ export default async function ProjectsPage() {
           ))}
         </Table>
       ) : (
-        <EmptyState>No projects yet. Add your first one to show it on the website.</EmptyState>
+        <EmptyState
+          icon={FolderOpen}
+          title="Show off your first project"
+          action={
+            <Link href="/admin/projects/new" className="btn-gold">
+              Add your first project
+            </Link>
+          }
+        >
+          Projects appear on the website&apos;s portfolio. Add one, upload before, during, and after photos, then switch on Published.
+        </EmptyState>
       )}
     </>
   );

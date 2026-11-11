@@ -13,9 +13,10 @@ import { archiveItem, deleteItem, saveItem } from "../actions";
 
 export const metadata = { title: "Inventory item" };
 
-export default async function InventoryItemPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function InventoryItemPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ name?: string }> }) {
   const s = await requireAdmin("team");
   const { id } = await params;
+  const suggestedName = (await searchParams).name?.slice(0, 120);
   const isNew = id === "new";
   if (!isNew && !/^[0-9a-f-]{36}$/i.test(id)) notFound();
 
@@ -45,7 +46,7 @@ export default async function InventoryItemPage({ params }: { params: Promise<{ 
     <AdminForm action={saveItem} submitLabel={item ? "Save changes" : "Add item"} redirectToast={item ? "Saved." : "Item added."}>
       {item && <input type="hidden" name="id" value={item.id} />}
       <div className="grid gap-5 sm:grid-cols-2">
-        <TextField name="name" label="Name" defaultValue={item?.name} placeholder="Portland cement, 40 kg" required />
+        <TextField name="name" label="Name" defaultValue={item?.name ?? suggestedName} placeholder="Portland cement, 40 kg" required />
         <SelectField name="kind" label="Type" defaultValue={item?.kind ?? "material"} options={Object.entries(inventoryKinds).map(([value, label]) => ({ value, label }))} />
         <TextField name="unit" label="Counted in" defaultValue={item?.unit ?? "pcs"} hint={`For example: ${commonUnits.slice(0, 6).join(", ")}`} required />
         <TextField name="category" label="Category (optional)" defaultValue={item?.category} placeholder="Masonry, Electrical, Plumbing" />

@@ -3,6 +3,8 @@ import { LogOut } from "lucide-react";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { NavProgress, PageTransition, Toaster } from "@/components/admin/motion";
 import { NotConnected } from "@/components/admin/NotConnected";
+import { ConnectionStatus } from "@/components/states/ConnectionStatus";
+import { SessionGuard } from "@/components/states/SessionGuard";
 import { requireAdmin, roleLabels } from "@/lib/admin/session";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { signOut } from "../auth-actions";
@@ -45,6 +47,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <PageTransition>{children}</PageTransition>
       </main>
       <Toaster />
+      <ConnectionStatus />
+      <SessionGuard />
     </div>
   );
 }

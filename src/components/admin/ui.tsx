@@ -1,4 +1,7 @@
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
+import { AlertTriangle, Inbox, SearchX } from "lucide-react";
+import { StatePanel } from "@/components/states/StatePanel";
 import { cn } from "@/lib/utils";
 
 export function PageHeader({ title, intro, action }: { title: string; intro?: string; action?: React.ReactNode }) {
@@ -45,8 +48,61 @@ export function Badge({ children, tone = "gray" }: { children: React.ReactNode; 
   return <span className={cn("inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold", tones[tone])}>{children}</span>;
 }
 
-export function EmptyState({ children }: { children: React.ReactNode }) {
+/**
+ * What a list shows before it has anything in it: what will appear here, and the first step
+ * to take. Without a title it falls back to a simple dashed note (used for small sub-lists).
+ */
+export function EmptyState({ children, title, icon = Inbox, action }: { children?: React.ReactNode; title?: string; icon?: LucideIcon; action?: React.ReactNode }) {
+  if (title) {
+    return (
+      <StatePanel tone="empty" icon={icon} title={title} size="sm" actions={action}>
+        {children}
+      </StatePanel>
+    );
+  }
   return <p className="rounded-xl border border-dashed border-gray-300 bg-white px-5 py-10 text-center text-[15px] text-gray-600">{children}</p>;
+}
+
+/** A search or filter that found nothing: repeats what was searched and offers ways out. */
+export function NoResults({ term, clearHref, tips, extra }: { term?: string; clearHref: string; tips: React.ReactNode[]; extra?: React.ReactNode }) {
+  return (
+    <StatePanel
+      tone="search"
+      icon={SearchX}
+      title={term ? `No results for “${term}”` : "Nothing matches these filters"}
+      size="sm"
+      role="status"
+      tips={tips}
+      actions={
+        <>
+          <Link href={clearHref} className="btn-navy">
+            {term ? "Clear the search" : "Show everything"}
+          </Link>
+          {extra}
+        </>
+      }
+    />
+  );
+}
+
+/** A list that could not be loaded (database busy, connection dropped). */
+export function LoadError({ retryHref, what }: { retryHref: string; what: string }) {
+  return (
+    <StatePanel
+      tone="error"
+      icon={AlertTriangle}
+      eyebrow="Couldn't load"
+      title={`We couldn't load the ${what} just now`}
+      size="sm"
+      role="alert"
+      tips={["Your data is safe. This is a loading problem, not a deleted list.", "Check your internet, then try again. It usually works within a minute."]}
+      actions={
+        <Link href={retryHref} className="btn-navy">
+          Try again
+        </Link>
+      }
+    />
+  );
 }
 
 /** Responsive table: scrolls sideways on phones instead of squashing columns. */

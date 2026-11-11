@@ -1,7 +1,12 @@
 import "server-only";
 import { z } from "zod";
 
-export type ActionState = { error?: string; fieldErrors?: Record<string, string>; message?: string };
+export type ActionState = {
+  error?: string;
+  fieldErrors?: Record<string, string>;
+  message?: string;
+  celebrate?: { title: string; next?: { href: string; label: string } };
+};
 
 /** Turns a zod error into "first message per field" for the form. */
 export function fieldErrors(error: z.ZodError): ActionState {
@@ -66,7 +71,7 @@ export function slugify(input: string) {
 export function dbError(error: { code?: string; message: string }, what = "this item"): ActionState {
   if (error.code === "23505") return { error: `Another ${what} already uses that web address (slug). Change it and save again.` };
   if (error.code === "23514") return { error: "One of the values is not allowed. Testimonials need the customer's consent before they can be shown." };
-  if (error.code === "42501") return { error: "Your role does not allow this change." };
+  if (error.code === "42501") return { error: "Your role doesn't allow this change. Ask the owner or an admin to make it for you, or to give you a role that can (Dashboard → Team)." };
   console.error("[admin] database error", error);
-  return { error: "Could not save. Please try again." };
+  return { error: "Couldn't save just now. Nothing was changed. Check your connection and press Save again; if it keeps failing, wait a minute and retry." };
 }

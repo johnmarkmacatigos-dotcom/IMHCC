@@ -1,22 +1,37 @@
 import Link from "next/link";
+import { MapPinOff } from "lucide-react";
 import { PublicChrome } from "@/components/site/PublicChrome";
+import { StatePanel } from "@/components/states/StatePanel";
 
 export default function NotFound() {
   return (
     <PublicChrome>
-    <div className="container-site flex flex-col items-start gap-5 py-24">
-      <span className="eyebrow">Page not found</span>
-      <h1 className="text-4xl">We couldn&apos;t find that page.</h1>
-      <p className="text-lg text-gray-600">It may have been moved or unpublished.</p>
-      <div className="flex flex-wrap gap-3">
-        <Link href="/" className="btn-navy">
-          Go to the homepage
-        </Link>
-        <Link href="/projects" className="btn-outline">
-          See our projects
-        </Link>
+      <div className="container-site py-16 sm:py-24">
+        <StatePanel
+          tone="search"
+          icon={MapPinOff}
+          eyebrow="Page not found"
+          title="We couldn't find that page"
+          size="lg"
+          tips={["The link may be old, or the project was unpublished.", "Check the address for a typo, or pick one of these instead."]}
+          actions={
+            <>
+              <Link href="/" className="btn-navy">
+                Go to the homepage
+              </Link>
+              <Link href="/projects" className="btn-outline">
+                See our projects
+              </Link>
+              <Link href="/hardware" className="btn-outline">
+                Browse hardware
+              </Link>
+              <Link href="/quote" className="btn-gold">
+                Get a free quote
+              </Link>
+            </>
+          }
+        />
       </div>
-    </div>
     </PublicChrome>
   );
 }
