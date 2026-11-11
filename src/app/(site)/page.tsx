@@ -81,23 +81,23 @@ export default async function HomePage() {
           ))}
         </div>
         {otherServices.length > 0 && (
-          <div className="rounded-2xl border border-gold-500/40 bg-gold-100/60 p-4 sm:p-5">
-            <p className="mb-3 flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.12em] text-navy-800">
+          <div className="rounded-xl border border-gold-500/40 bg-gold-100/60 p-3 sm:p-4">
+            <p className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-navy-800">
               <span aria-hidden className="size-2 rounded-full bg-brick-600 shadow-[0_0_0_3px_rgba(207,68,54,0.25)]" />
               More services
             </p>
-            <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4" aria-label="More services">
+            <ul className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 sm:gap-2 lg:grid-cols-4" aria-label="More services">
               {otherServices.map((s, i) => (
                 <li key={s.id}>
                   <Link
                     href={`/services/${s.slug}`}
                     className={cn(
-                      "group flex h-full min-h-11 items-center justify-between gap-1.5 rounded-lg border-l-4 bg-white px-3 py-2 text-[13px] font-semibold leading-snug text-navy-800 shadow-sm transition-colors hover:bg-navy-800 hover:text-white",
+                      "group flex h-full min-h-9 items-center justify-between gap-1 rounded-md border-l-[3px] bg-white px-2 py-1.5 text-[11.5px] font-semibold leading-tight sm:px-2.5 sm:text-[12.5px] text-navy-800 shadow-sm transition-colors hover:bg-navy-800 hover:text-white",
                       ["border-gold-500", "border-navy-800", "border-brick-600"][i % 3],
                     )}
                   >
                     <span>{s.name}</span>
-                    <ChevronRight className="size-3.5 shrink-0 text-gold-700 group-hover:text-gold-300" aria-hidden />
+                    <ChevronRight className="hidden size-3 shrink-0 text-gold-700 sm:block group-hover:text-gold-300" aria-hidden />
                   </Link>
                 </li>
               ))}
