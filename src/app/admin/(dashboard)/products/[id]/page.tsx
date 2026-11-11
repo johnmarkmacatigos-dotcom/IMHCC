@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Boxes } from "lucide-react";
 import { AdminForm, CheckField, SelectField, TextArea, TextField } from "@/components/admin/Form";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { ImageField } from "@/components/admin/ImageField";
@@ -21,10 +23,22 @@ export default async function ProductEditor({ params }: { params: Promise<{ id: 
     if (!data) notFound();
     x = data;
   }
+  const tracked = x
+    ? (await s.db.from("inventory_items").select("id, quantity, unit").eq("product_id", x.id).maybeSingle<{ id: string; quantity: number; unit: string }>()).data
+    : null;
   return (
     <>
       <BackLink href="/admin/products">All products</BackLink>
       <PageHeader title={x ? x.name : "Add a product"} />
+      {tracked && (
+        <p className="flex flex-wrap items-center gap-2 rounded-lg bg-gold-100 px-4 py-3 text-sm text-navy-800">
+          <Boxes className="size-4 text-gold-700" aria-hidden />
+          Stock for this product comes from Inventory ({Number(tracked.quantity).toLocaleString("en-PH")} {tracked.unit} on hand).
+          <Link href={`/admin/inventory/${tracked.id}`} className="font-semibold underline">
+            Record stock there
+          </Link>
+        </p>
+      )}
       <Card>
         <AdminForm action={saveProduct} submitLabel={x ? "Save changes" : "Add product"}>
           {x && <input type="hidden" name="id" value={x.id} />}
@@ -45,7 +59,11 @@ export default async function ProductEditor({ params }: { params: Promise<{ id: 
             />
             <TextField name="price" label="Price (₱)" inputMode="decimal" defaultValue={x?.price} placeholder="450" />
             <TextField name="price_unit" label="Per" defaultValue={x?.price_unit} placeholder="piece, box, meter" />
-            <TextField name="stock_quantity" label="Quantity on hand" type="number" defaultValue={x?.stock_quantity ?? 0} />
+            {tracked ? (
+              <input type="hidden" name="stock_quantity" value={x?.stock_quantity ?? 0} />
+            ) : (
+              <TextField name="stock_quantity" label="Quantity on hand" type="number" defaultValue={x?.stock_quantity ?? 0} />
+            )}
           </div>
           <CheckField name="price_on_request" label="Hide the price (show 'Ask for price')" defaultChecked={x?.price_on_request} />
           <TextArea name="description" label="Description" defaultValue={x?.description} />

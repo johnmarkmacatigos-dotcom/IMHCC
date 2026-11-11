@@ -134,3 +134,267 @@
     overflow-x: auto;
   }
 }
+
+/* ───────────── Owner dashboard motion ─────────────
+ * Everything below is scoped to .admin-shell so the public site is unchanged.
+ * Durations stay short (150–500ms) and only transform/opacity animate, so it stays smooth on phones. */
+@keyframes admin-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes admin-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes admin-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes admin-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes admin-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes admin-shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+@keyframes admin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+@keyframes admin-toast-out {
+  to {
+    opacity: 0;
+    transform: translateX(24px) scale(0.96);
+  }
+}
+@keyframes admin-countdown {
+  to {
+    transform: scaleX(0);
+  }
+}
+@keyframes admin-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}
+@keyframes admin-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes admin-progress {
+  0% {
+    transform: scaleX(0);
+  }
+  30% {
+    transform: scaleX(0.45);
+  }
+  100% {
+    transform: scaleX(0.9);
+  }
+}
+
+.admin-shell {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.admin-page-in {
+  animation: admin-page-in 0.35s var(--ease-out) both;
+}
+/* Children appear one after another. Put .admin-stagger on the parent. */
+.admin-stagger > *,
+.admin-stagger-rows tbody > tr {
+  animation: admin-page-in 0.4s var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 12) * 45ms + 60ms);
+}
+.admin-stagger > :nth-child(1),
+.admin-stagger-rows tbody > tr:nth-child(1) {
+  --i: 0;
+}
+.admin-stagger > :nth-child(2),
+.admin-stagger-rows tbody > tr:nth-child(2) {
+  --i: 1;
+}
+.admin-stagger > :nth-child(3),
+.admin-stagger-rows tbody > tr:nth-child(3) {
+  --i: 2;
+}
+.admin-stagger > :nth-child(4),
+.admin-stagger-rows tbody > tr:nth-child(4) {
+  --i: 3;
+}
+.admin-stagger > :nth-child(5),
+.admin-stagger-rows tbody > tr:nth-child(5) {
+  --i: 4;
+}
+.admin-stagger > :nth-child(6),
+.admin-stagger-rows tbody > tr:nth-child(6) {
+  --i: 5;
+}
+.admin-stagger > :nth-child(7),
+.admin-stagger-rows tbody > tr:nth-child(7) {
+  --i: 6;
+}
+.admin-stagger > :nth-child(8),
+.admin-stagger-rows tbody > tr:nth-child(8) {
+  --i: 7;
+}
+.admin-stagger > :nth-child(9),
+.admin-stagger-rows tbody > tr:nth-child(9) {
+  --i: 8;
+}
+.admin-stagger > :nth-child(10),
+.admin-stagger-rows tbody > tr:nth-child(10) {
+  --i: 9;
+}
+.admin-stagger > :nth-child(11),
+.admin-stagger-rows tbody > tr:nth-child(11) {
+  --i: 10;
+}
+.admin-stagger > :nth-child(12),
+.admin-stagger-rows tbody > tr:nth-child(12) {
+  --i: 11;
+}
+.admin-stagger > :nth-child(n + 13),
+.admin-stagger-rows tbody > tr:nth-child(n + 13) {
+  --i: 12;
+}
+.admin-pop {
+  animation: admin-pop 0.45s var(--ease-spring) both;
+}
+.admin-shake {
+  animation: admin-shake 0.45s ease-in-out both;
+}
+.admin-bar-y {
+  transform-origin: bottom;
+  animation: admin-grow-y 0.7s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 35ms + 150ms);
+}
+.admin-bar-x {
+  transform-origin: left;
+  animation: admin-grow-x 0.8s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 80ms + 200ms);
+}
+.admin-skeleton {
+  background: linear-gradient(90deg, #e9ecf1 25%, #f5f6f8 37%, #e9ecf1 63%);
+  background-size: 200% 100%;
+  animation: admin-shimmer 1.3s linear infinite;
+}
+.admin-toast {
+  animation: admin-toast-in 0.3s var(--ease-spring) both;
+}
+.admin-toast[data-leaving] {
+  animation: admin-toast-out 0.2s ease-in both;
+}
+.admin-toast-timer {
+  transform-origin: left;
+  animation: admin-countdown linear both;
+}
+.admin-toast:hover .admin-toast-timer {
+  animation-play-state: paused;
+}
+.admin-dialog[open] {
+  animation: admin-dialog-in 0.22s var(--ease-out) both;
+}
+.admin-dialog::backdrop {
+  background: rgb(11 26 44 / 0.5);
+  animation: admin-fade-in 0.2s ease-out both;
+}
+.admin-progress[data-state="loading"] {
+  animation: admin-progress 8s cubic-bezier(0.1, 0.7, 0.2, 1) both;
+}
+.admin-progress[data-state="done"] {
+  transform: scaleX(1);
+  opacity: 0;
+  transition:
+    transform 0.2s ease-out,
+    opacity 0.3s ease 0.2s;
+}
+/* Buttons and tiles give a little under the finger. */
+.admin-shell :is(button, a)[class*="btn-"],
+.admin-press {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: 0.15s;
+}
+.admin-shell :is(button, a)[class*="btn-"]:not(:disabled):active,
+.admin-press:active {
+  transform: scale(0.97);
+}
+.admin-lift {
+  transition:
+    transform 0.2s var(--ease-out),
+    box-shadow 0.2s var(--ease-out),
+    --tw-ring-color 0.2s;
+}
+@media (hover: hover) {
+  .admin-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px -12px rgb(20 43 70 / 0.35);
+  }
+}
+.admin-lift:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell *,
+  .admin-shell *::before,
+  .admin-shell *::after,
+  .admin-dialog,
+  .admin-dialog::backdrop {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .admin-skeleton {
+    animation: none !important;
+  }
+  .admin-lift:hover,
+  .admin-lift:active,
+  .admin-press:active,
+  .admin-shell :is(button, a)[class*="btn-"]:active {
+    transform: none;
+  }
+}

@@ -30,8 +30,8 @@ export const roleLabels: Record<Role, string> = {
 export const roleHelp: Record<Role, string> = {
   owner: "Everything, including giving the owner role",
   admin: "Everything except the owner role",
-  editor: "Website content, products, and inquiries",
-  staff: "Inquiries and products only",
+  editor: "Website content, products, inventory, and inquiries",
+  staff: "Inquiries, products, and stock in / out only",
 };
 
 function permissions(role: Role) {

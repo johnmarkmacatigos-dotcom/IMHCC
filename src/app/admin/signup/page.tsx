@@ -22,7 +22,7 @@ export default function SignupPage() {
         </>
       }
     >
-      <AdminForm action={signUp} submitLabel="Create account">
+      <AdminForm action={signUp} submitLabel="Create account" redirectToast={false}>
         <TextField name="full_name" label="Your name" required />
         <TextField name="email" label="Email" type="email" inputMode="email" required />
         <TextField name="password" label="Password" type="password" hint="At least 10 characters." required />

@@ -24,8 +24,8 @@ export function Card({ children, className, title }: { children: React.ReactNode
 
 export function BackLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link href={href} className="self-start text-sm font-semibold text-navy-800 hover:underline">
-      ← {children}
+    <Link href={href} className="group self-start text-sm font-semibold text-navy-800 hover:underline">
+      <span className="inline-block transition-transform group-hover:-translate-x-1">←</span> {children}
     </Link>
   );
 }
@@ -52,7 +52,7 @@ export function EmptyState({ children }: { children: React.ReactNode }) {
 /** Responsive table: scrolls sideways on phones instead of squashing columns. */
 export function Table({ head, children }: { head: string[]; children: React.ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+    <div className="admin-stagger-rows overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead className="border-b border-gray-200 bg-gray-50 text-[13px] text-gray-600">
           <tr>
@@ -63,7 +63,7 @@ export function Table({ head, children }: { head: string[]; children: React.Reac
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">{children}</tbody>
+        <tbody className="divide-y divide-gray-100 [&>tr]:transition-colors">{children}</tbody>
       </table>
     </div>
   );
@@ -71,6 +71,27 @@ export function Table({ head, children }: { head: string[]; children: React.Reac
 
 export function Td({ children, className }: { children?: React.ReactNode; className?: string }) {
   return <td className={cn("px-4 py-3 align-middle", className)}>{children}</td>;
+}
+
+/**
+ * Inquiry status pill. "New" carries a softly pulsing dot so it catches the eye, and the pill
+ * pops whenever the status changes (the key remounts it).
+ */
+export function StatusBadge({ status }: { status: keyof typeof inquiryStatus }) {
+  const st = inquiryStatus[status];
+  return (
+    <span key={status} className="admin-pop inline-flex">
+      <Badge tone={st.tone}>
+        {status === "new" && (
+          <span className="relative mr-1.5 flex size-2" aria-hidden>
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-white/80 motion-reduce:hidden" />
+            <span className="relative inline-flex size-2 rounded-full bg-white" />
+          </span>
+        )}
+        {st.label}
+      </Badge>
+    </span>
+  );
 }
 
 export const inquiryStatus = {

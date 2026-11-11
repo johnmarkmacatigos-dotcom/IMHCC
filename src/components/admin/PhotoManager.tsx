@@ -6,6 +6,7 @@ import { ImagePlus, Loader2, Star, Trash2 } from "lucide-react";
 import { addProjectPhotos, deleteProjectPhoto, setProjectCover, updateProjectPhoto } from "@/app/admin/(dashboard)/projects/actions";
 import { cn } from "@/lib/utils";
 import { uploadMedia } from "./ImageField";
+import { toast } from "./motion";
 
 type Phase = "before" | "during" | "after";
 type Photo = { id: string; image_url: string; caption: string | null; phase: Phase; sort_order: number };
@@ -41,15 +42,19 @@ export function PhotoManager({ projectId, photos, cover }: { projectId: string; 
       setProgress("Saving…");
       const res = await addProjectPhotos({ project_id: projectId, photos: uploaded });
       if (res.error) setError(res.error);
+      else toast(uploaded.length === 1 ? "Photo added." : `${uploaded.length} photos added.`);
     }
     setProgress(null);
     router.refresh();
   }
 
-  const run = (fn: () => Promise<{ error?: string }>) =>
+  const run = (fn: () => Promise<{ error?: string }>, done: string) =>
     start(async () => {
       const res = await fn();
-      if (res.error) setError(res.error);
+      if (res.error) {
+        setError(res.error);
+        toast(res.error, "error");
+      } else toast(done);
       router.refresh();
     });
 
@@ -99,22 +104,22 @@ export function PhotoManager({ projectId, photos, cover }: { projectId: string; 
       {photos.length === 0 ? (
         <p className="text-[15px] text-gray-600">No photos yet. Pick &quot;Before&quot;, &quot;During&quot;, or &quot;After&quot;, then add photos from your phone or computer.</p>
       ) : (
-        <ul className={cn("grid gap-4 sm:grid-cols-2 xl:grid-cols-3", pending && "opacity-70")}>
+        <ul className={cn("admin-stagger grid gap-4 transition-opacity sm:grid-cols-2 xl:grid-cols-3", pending && "opacity-70")}>
           {photos.map((p) => (
             <li key={p.id} className="flex flex-col gap-2 rounded-lg bg-white p-3 ring-1 ring-gray-200">
               <div className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.image_url} alt={p.caption ?? ""} className="aspect-[4/3] w-full rounded-md object-cover" />
                 {cover === p.image_url && (
-                  <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-gold-500 px-2 py-0.5 text-xs font-bold text-navy-900">
+                  <span className="admin-pop absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-gold-500 px-2 py-0.5 text-xs font-bold text-navy-900">
                     <Star className="size-3" aria-hidden /> Cover
                   </span>
                 )}
               </div>
-              <PhotoRow photo={p} onSave={(v) => run(() => updateProjectPhoto({ id: p.id, ...v }))} />
+              <PhotoRow photo={p} onSave={(v) => run(() => updateProjectPhoto({ id: p.id, ...v }), "Photo updated.")} />
               <div className="flex flex-wrap justify-between gap-2">
                 {cover !== p.image_url ? (
-                  <button type="button" onClick={() => run(() => setProjectCover(projectId, p.image_url))} className="text-sm font-semibold text-navy-800 hover:underline">
+                  <button type="button" onClick={() => run(() => setProjectCover(projectId, p.image_url), "Cover photo changed.")} className="text-sm font-semibold text-navy-800 hover:underline">
                     Use as cover
                   </button>
                 ) : (
@@ -122,7 +127,7 @@ export function PhotoManager({ projectId, photos, cover }: { projectId: string; 
                 )}
                 <button
                   type="button"
-                  onClick={() => window.confirm("Delete this photo?") && run(() => deleteProjectPhoto(p.id))}
+                  onClick={() => window.confirm("Delete this photo?") && run(() => deleteProjectPhoto(p.id), "Photo deleted.")}
                   className="inline-flex items-center gap-1 text-sm font-semibold text-brick-600 hover:underline"
                 >
                   <Trash2 className="size-4" aria-hidden /> Delete
