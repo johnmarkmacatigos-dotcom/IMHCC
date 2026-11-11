@@ -198,6 +198,8 @@ export function NavProgress({ scope = "/admin" }: { scope?: "/admin" | "/" }) {
       setState("loading");
     };
     const onSubmit = (e: SubmitEvent) => {
+      // Forms handled in the page (quote form, dashboard saves) don't navigate.
+      if (e.defaultPrevented) return;
       const f = e.target as HTMLFormElement;
       if ((f.method || "get").toLowerCase() === "get" && f.action && inScope(new URL(f.action, location.href).pathname)) setState("loading");
     };

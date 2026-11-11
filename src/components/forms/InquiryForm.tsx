@@ -215,11 +215,11 @@ export function InquiryForm({ type, services = [], defaultService, productId, pr
           <ol className="grid gap-3 sm:grid-cols-3">
             {steps.map((st, i) => (
               <li key={st.title} className="ux-in flex gap-3 rounded-xl bg-mist p-4" style={{ animationDelay: `${200 + i * 120}ms` }}>
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold-500 font-display font-semibold text-navy-900">{i + 1}</span>
+                <span className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-gold-500 text-navy-900" aria-label={`Step ${i + 1}`}>
+                  <st.icon className="size-4" aria-hidden />
+                </span>
                 <span className="flex flex-col gap-0.5">
-                  <span className="flex items-center gap-1.5 font-semibold text-navy-800">
-                    <st.icon className="size-4 text-gold-700" aria-hidden /> {st.title}
-                  </span>
+                  <span className="font-semibold text-navy-800">{st.title}</span>
                   <span className="text-sm leading-snug text-gray-600">{st.text}</span>
                 </span>
               </li>
