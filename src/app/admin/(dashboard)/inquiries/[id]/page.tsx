@@ -2,7 +2,7 @@ import { buckets } from "@/lib/supabase/env";
 import { notFound } from "next/navigation";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import { AdminForm, SelectField, TextArea } from "@/components/admin/Form";
-import { BackLink, Badge, Card, PageHeader, dateTime, inquiryStatus, inquiryType } from "@/components/admin/ui";
+import { BackLink, StatusBadge, Card, PageHeader, dateTime, inquiryStatus, inquiryType } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import { telHref } from "@/lib/utils";
 import { updateInquiry } from "../actions";
@@ -64,7 +64,7 @@ export default async function InquiryPage({ params }: { params: Promise<{ id: st
       <PageHeader
         title={inq.full_name}
         intro={`${inquiryType[inq.type]} · ${inq.reference_no} · received ${dateTime(inq.created_at)}`}
-        action={<Badge tone={inquiryStatus[inq.status].tone}>{inquiryStatus[inq.status].label}</Badge>}
+        action={<StatusBadge status={inq.status} />}
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">

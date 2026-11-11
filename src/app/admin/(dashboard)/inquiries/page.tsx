@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Badge, EmptyState, PageHeader, Table, Td, inquiryStatus, inquiryType, timeAgo } from "@/components/admin/ui";
+import { StatusBadge, EmptyState, PageHeader, Table, Td, inquiryStatus, inquiryType, timeAgo } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
 import { cn } from "@/lib/utils";
 
@@ -115,7 +115,7 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
                 <span className="text-[13px] text-gray-500">{inquiryType[i.type]}</span>
               </Td>
               <Td>
-                <Badge tone={inquiryStatus[i.status].tone}>{inquiryStatus[i.status].label}</Badge>
+                <StatusBadge status={i.status} />
               </Td>
               <Td className="whitespace-nowrap text-gray-600">{timeAgo(i.created_at)}</Td>
             </tr>
