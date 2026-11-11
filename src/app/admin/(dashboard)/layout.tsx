@@ -12,7 +12,11 @@ export const dynamic = "force-dynamic";
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   if (!isSupabaseConfigured) return <NotConnected />;
   const s = await requireAdmin();
-  const { count } = await s.db.from("inquiries").select("id", { count: "exact", head: true }).eq("status", "new");
+  const [{ count }, { count: lowStock }] = await Promise.all([
+    s.db.from("inquiries").select("id", { count: "exact", head: true }).eq("status", "new"),
+    // Before the inventory SQL is installed this simply returns no count.
+    s.db.from("inventory_levels").select("id", { count: "exact", head: true }).eq("is_active", true).in("stock_state", ["low", "out"]),
+  ]);
 
   return (
     <div className="admin-shell min-h-dvh bg-mist lg:flex">
@@ -22,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <AdminNav
         can={s.can}
         newInquiries={count ?? 0}
+        lowStock={lowStock ?? 0}
         user={
           <div>
             <div className="truncate font-semibold text-white">{s.profile.full_name ?? s.profile.email}</div>

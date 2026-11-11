@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Boxes,
   Building2,
   ClipboardList,
   ExternalLink,
@@ -29,13 +30,26 @@ const items = [
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote, level: "edit" },
   { href: "/admin/services", label: "Services", icon: Wrench, level: "edit" },
   { href: "/admin/products", label: "Hardware products", icon: Package, level: "team" },
+  { href: "/admin/inventory", label: "Inventory", icon: Boxes, level: "team" },
   { href: "/admin/promotions", label: "Promotions", icon: Megaphone, level: "edit" },
   { href: "/admin/settings", label: "Website settings", icon: Settings, level: "manage" },
   { href: "/admin/team", label: "Team", icon: Users, level: "manage" },
   { href: "/admin/activity", label: "Activity log", icon: History, level: "manage" },
 ] as const;
 
-export function AdminNav({ can, newInquiries, user, signOut }: { can: { edit: boolean; manage: boolean }; newInquiries: number; user: React.ReactNode; signOut: React.ReactNode }) {
+export function AdminNav({
+  can,
+  newInquiries,
+  lowStock = 0,
+  user,
+  signOut,
+}: {
+  can: { edit: boolean; manage: boolean };
+  newInquiries: number;
+  lowStock?: number;
+  user: React.ReactNode;
+  signOut: React.ReactNode;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   useEffect(() => setOpen(false), [pathname]);
@@ -68,6 +82,11 @@ export function AdminNav({ can, newInquiries, user, signOut }: { can: { edit: bo
               <span key={newInquiries} className="admin-pop relative rounded-full bg-brick-600 px-2 py-0.5 text-xs font-bold text-white">
                 {newInquiries}
               </span>
+            </span>
+          )}
+          {href === "/admin/inventory" && lowStock > 0 && (
+            <span key={lowStock} className="admin-pop rounded-full bg-brick-600 px-2 py-0.5 text-xs font-bold text-white" aria-label={`${lowStock} to reorder`}>
+              {lowStock}
             </span>
           )}
         </Link>

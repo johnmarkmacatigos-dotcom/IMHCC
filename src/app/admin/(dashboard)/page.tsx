@@ -26,13 +26,14 @@ export default async function Overview({ searchParams }: { searchParams: Promise
   const since = new Date(now - 14 * DAY);
   const statusKeys = Object.keys(inquiryStatus) as (keyof typeof inquiryStatus)[];
 
-  const [newCount, monthCount, openQuotes, wonMonth, published, pendingReviews, recent, lastTwoWeeks, ...byStatus] = await Promise.all([
+  const [newCount, monthCount, openQuotes, wonMonth, published, pendingReviews, toReorder, recent, lastTwoWeeks, ...byStatus] = await Promise.all([
     count("inquiries", (q) => q.eq("status", "new")),
     count("inquiries", (q) => q.gte("created_at", monthStart.toISOString())),
     count("inquiries", (q) => q.eq("type", "quotation").in("status", ["new", "contacted", "site_visit", "quoted"])),
     count("inquiries", (q) => q.eq("status", "won").gte("updated_at", monthStart.toISOString())),
     count("projects", (q) => q.eq("is_published", true)),
     count("testimonials", (q) => q.eq("status", "pending")),
+    count("inventory_levels", (q) => q.eq("is_active", true).in("stock_state", ["low", "out"])),
     s.db.from("inquiries").select("id, reference_no, type, status, full_name, service, created_at").order("created_at", { ascending: false }).limit(8).returns<Recent[]>(),
     s.db.from("inquiries").select("created_at").gte("created_at", since.toISOString()).limit(5000).returns<{ created_at: string }[]>(),
     ...statusKeys.map((k) => count("inquiries", (q) => q.eq("status", k))),
@@ -58,6 +59,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
     { label: "Jobs won this month", value: wonMonth, href: "/admin/inquiries?status=won", accent: "border-gold-500" },
     { label: "Projects on the website", value: published, href: "/admin/projects", hide: !s.can.edit, accent: "border-navy-800" },
     { label: "Testimonials to review", value: pendingReviews, href: "/admin/testimonials", hide: !s.can.edit, highlight: pendingReviews > 0, accent: "border-brick-600" },
+    { label: "Inventory to reorder", value: toReorder, href: "/admin/inventory?state=reorder", highlight: toReorder > 0, accent: "border-brick-600" },
   ].filter((x) => !x.hide);
 
   const firstName = (s.profile.full_name ?? "").split(" ")[0];
@@ -71,7 +73,7 @@ export default async function Overview({ searchParams }: { searchParams: Promise
         </p>
       )}
 
-      <div className="admin-stagger grid grid-cols-2 gap-3 md:grid-cols-3">
+      <div className="admin-stagger grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {stats.map((st) => (
           <Link
             key={st.label}
