@@ -56,6 +56,7 @@ export default async function ProductEditor({ params }: { params: Promise<{ id: 
                 { value: "out_of_stock", label: "Out of stock" },
                 { value: "made_to_order", label: "Made to order" },
               ]}
+              hint="Turns to Out of stock by itself when quantity is 0, unless Made to order."
             />
             <TextField name="price" label="Price (₱)" inputMode="decimal" defaultValue={x?.price} placeholder="450" />
             <TextField name="price_unit" label="Per" defaultValue={x?.price_unit} placeholder="piece, box, meter" />
@@ -77,7 +78,7 @@ export default async function ProductEditor({ params }: { params: Promise<{ id: 
           <TextField name="slug" label="Web address" defaultValue={x?.slug} hint="Leave blank to make one from the name." />
         </AdminForm>
       </Card>
-      {x && (
+      {x && s.can.edit && (
         <div className="flex justify-end">
           <DeleteButton action={deleteProduct} id={x.id} confirm={`Delete "${x.name}"? This cannot be undone.`} />
         </div>

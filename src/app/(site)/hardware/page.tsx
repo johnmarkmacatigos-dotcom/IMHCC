@@ -5,6 +5,7 @@ import { Truck } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { getProducts } from "@/lib/data";
 import type { StockStatus } from "@/lib/types";
+import { effectiveStockStatus } from "@/lib/stock";
 import { cn, formatPeso } from "@/lib/utils";
 
 export const revalidate = 300;
@@ -36,11 +37,13 @@ export default async function HardwarePage() {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products
                 .filter((p) => p.category === cat)
-                .map((p) => (
+                .map((p) => {
+                  const stock = stockLabel[effectiveStockStatus(p.stock_status, p.stock_quantity)];
+                  return (
                   <article key={p.id} id={p.slug} className="flex scroll-mt-28 flex-col overflow-hidden rounded-xl border border-gray-200">
                     <div className="relative aspect-[4/3] bg-mist">
                       {p.image_url && <Image src={p.image_url} alt={p.name} fill sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw" className="object-cover" />}
-                      <span className={cn("absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold", stockLabel[p.stock_status].cls)}>{stockLabel[p.stock_status].text}</span>
+                      <span className={cn("absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold", stock.cls)}>{stock.text}</span>
                     </div>
                     <div className="flex flex-1 flex-col gap-3 p-5">
                       <h3 className="text-xl">{p.name}</h3>
@@ -59,7 +62,8 @@ export default async function HardwarePage() {
                       </Link>
                     </div>
                   </article>
-                ))}
+                  );
+                })}
             </div>
           </section>
         ))}

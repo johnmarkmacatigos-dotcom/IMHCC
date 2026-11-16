@@ -6,7 +6,22 @@ import { Loader2, Trash2 } from "lucide-react";
 import { toastAfterNavigation } from "./motion";
 
 /** Delete button that asks first, in a dialog that eases in, then confirms with a toast. */
-export function DeleteButton({ action, id, label = "Delete", confirm }: { action: (fd: FormData) => Promise<void>; id: string; label?: string; confirm: string }) {
+export function DeleteButton({
+  action,
+  id,
+  label = "Delete",
+  confirm,
+  compact = false,
+  title,
+}: {
+  action: (fd: FormData) => Promise<void>;
+  id: string;
+  label?: string;
+  confirm: string;
+  /** Icon-only trigger for table rows; `title` names the item for screen readers. */
+  compact?: boolean;
+  title?: string;
+}) {
   const dialog = useRef<HTMLDialogElement>(null);
   return (
     <form action={action}>
@@ -14,9 +29,15 @@ export function DeleteButton({ action, id, label = "Delete", confirm }: { action
       <button
         type="button"
         onClick={() => dialog.current?.showModal()}
-        className="admin-press inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-semibold text-brick-600 hover:bg-brick-50"
+        aria-label={compact ? `${label}${title ? ` ${title}` : ""}` : undefined}
+        title={compact ? label : undefined}
+        className={
+          compact
+            ? "admin-press inline-flex size-11 items-center justify-center rounded-md text-brick-600 hover:bg-brick-50"
+            : "admin-press inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-semibold text-brick-600 hover:bg-brick-50"
+        }
       >
-        <Trash2 className="size-4" aria-hidden /> {label}
+        <Trash2 className="size-4" aria-hidden /> {!compact && label}
       </button>
       <dialog
         ref={dialog}
