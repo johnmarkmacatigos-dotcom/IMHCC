@@ -6,6 +6,7 @@ import type { FormState } from "@/components/admin/Form";
 import { dbError, fieldErrors, formObject, optional, optionalUrl, required, slug, slugify } from "@/lib/admin/forms";
 import { refreshSite } from "@/lib/admin/revalidate";
 import { logActivity, requireAdmin } from "@/lib/admin/session";
+import { effectiveStockStatus } from "@/lib/stock";
 
 const money = z
   .string()
@@ -36,7 +37,11 @@ export async function saveProduct(_: FormState, fd: FormData): Promise<FormState
   const id = String(fd.get("id") ?? "");
   const parsed = schema.safeParse(formObject(fd, { booleans: ["price_on_request", "is_featured", "is_published"] }));
   if (!parsed.success) return fieldErrors(parsed.error);
-  const values = { ...parsed.data, slug: parsed.data.slug || slugify(parsed.data.name) };
+  const values = {
+    ...parsed.data,
+    slug: parsed.data.slug || slugify(parsed.data.name),
+    stock_status: effectiveStockStatus(parsed.data.stock_status, parsed.data.stock_quantity),
+  };
   if (id) {
     const { error } = await s.db.from("products").update(values).eq("id", id);
     if (error) return dbError(error, "product");
@@ -52,11 +57,11 @@ export async function saveProduct(_: FormState, fd: FormData): Promise<FormState
 }
 
 export async function deleteProduct(fd: FormData) {
-  const s = await requireAdmin("team");
+  const s = await requireAdmin("edit");
   const id = z.string().uuid().parse(fd.get("id"));
-  const { error } = await s.db.from("products").delete().eq("id", id);
+  const { data, error } = await s.db.from("products").delete().eq("id", id).select("name").maybeSingle<{ name: string }>();
   if (error) throw new Error("Could not delete.");
-  await logActivity(s, "deleted", "product", id);
+  await logActivity(s, "deleted", "product", id, data ? { name: data.name } : undefined);
   refreshSite();
   redirect("/admin/products");
 }

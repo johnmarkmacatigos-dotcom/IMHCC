@@ -83,6 +83,7 @@ export type Product = {
   price_unit: string | null;
   price_on_request: boolean;
   stock_status: StockStatus;
+  stock_quantity?: number;
   delivery_info: string | null;
   image_url: string | null;
   is_featured: boolean;

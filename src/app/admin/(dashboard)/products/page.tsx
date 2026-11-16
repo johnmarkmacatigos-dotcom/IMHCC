@@ -1,9 +1,12 @@
 import { CategoryTag } from "@/components/site/CategoryTag";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Pencil, Plus } from "lucide-react";
+import { DeleteButton } from "@/components/admin/DeleteButton";
 import { Badge, EmptyState, PageHeader, Table, Td } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { effectiveStockStatus } from "@/lib/stock";
 import { formatPeso } from "@/lib/utils";
+import { deleteProduct } from "./actions";
 
 export const metadata = { title: "Hardware products" };
 
@@ -31,9 +34,11 @@ export default async function ProductsPage() {
         }
       />
       {data && data.length > 0 ? (
-        <Table head={["Product", "Category", "Price", "Stock", "Website"]}>
-          {data.map((x) => (
-            <tr key={x.id} className="hover:bg-mist">
+        <Table head={["Product", "Category", "Price", "Stock", "Website", "Actions"]}>
+          {data.map((x) => {
+            const stock = stockLabels[effectiveStockStatus(x.stock_status, x.stock_quantity)];
+            return (
+              <tr key={x.id} className="hover:bg-mist">
               <Td>
                 <Link href={`/admin/products/${x.id}`} className="block font-semibold text-navy-800">
                   {x.name}
@@ -46,13 +51,29 @@ export default async function ProductsPage() {
               <Td className="whitespace-nowrap">{x.price_on_request || x.price == null ? "On request" : `${formatPeso(x.price)}${x.price_unit ? ` / ${x.price_unit}` : ""}`}</Td>
               <Td>
                 <span className="flex flex-wrap items-center gap-2">
-                  <Badge tone={stockLabels[x.stock_status].tone}>{stockLabels[x.stock_status].label}</Badge>
+                  <Badge tone={stock.tone}>{stock.label}</Badge>
                   <span className="text-gray-500">{x.stock_quantity}</span>
                 </span>
               </Td>
               <Td>{x.is_published ? <Badge tone="green">Shown</Badge> : <Badge>Hidden</Badge>}</Td>
-            </tr>
-          ))}
+              <Td>
+                <span className="flex items-center gap-1">
+                  <Link
+                    href={`/admin/products/${x.id}`}
+                    aria-label={`Edit ${x.name}`}
+                    title="Edit"
+                    className="admin-press inline-flex size-11 items-center justify-center rounded-md text-navy-800 hover:bg-gold-100"
+                  >
+                    <Pencil className="size-4" aria-hidden />
+                  </Link>
+                  {s.can.edit && (
+                    <DeleteButton action={deleteProduct} id={x.id} compact title={x.name} confirm={`Delete "${x.name}"? It will be removed from the website. This cannot be undone.`} />
+                  )}
+                </span>
+              </Td>
+              </tr>
+            );
+          })}
         </Table>
       ) : (
         <EmptyState>No products yet.</EmptyState>
