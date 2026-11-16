@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Boxes } from "lucide-react";
-import { AdminForm, CheckField, SelectField, TextArea, TextField } from "@/components/admin/Form";
+import { AdminForm, CheckField, ListField, SelectField, TextArea, TextField } from "@/components/admin/Form";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { ImageField } from "@/components/admin/ImageField";
 import { BackLink, Card, PageHeader } from "@/components/admin/ui";
@@ -11,7 +11,7 @@ import { deleteProduct, saveProduct } from "../actions";
 
 export const metadata = { title: "Product" };
 
-type P = Product & { sku: string | null; stock_quantity: number; is_published: boolean };
+type P = Product & { sku: string | null; stock_quantity: number; sizes: string[]; is_published: boolean };
 
 export default async function ProductEditor({ params }: { params: Promise<{ id: string }> }) {
   const s = await requireAdmin("team");
@@ -66,6 +66,7 @@ export default async function ProductEditor({ params }: { params: Promise<{ id: 
               <TextField name="stock_quantity" label="Quantity on hand" type="number" defaultValue={x?.stock_quantity ?? 0} />
             )}
           </div>
+          <ListField name="sizes" label="Sizes" defaultValue={x?.sizes} hint={'One size per line, for example 25 cm x 2.9 m or 1 1/2". Customers pick one when they ask about this product.'} />
           <CheckField name="price_on_request" label="Hide the price (show 'Ask for price')" defaultChecked={x?.price_on_request} />
           <TextArea name="description" label="Description" defaultValue={x?.description} />
           <TextArea name="specifications" label="Specifications" defaultValue={x?.specifications} hint="Size, color, material, brand." />

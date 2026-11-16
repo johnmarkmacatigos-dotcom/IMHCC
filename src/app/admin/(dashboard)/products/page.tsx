@@ -17,11 +17,11 @@ const stockLabels = {
   made_to_order: { label: "Made to order", tone: "navy" },
 } as const;
 
-type Row = { id: string; name: string; category: string; sku: string | null; price: number | null; price_unit: string | null; price_on_request: boolean; stock_quantity: number; stock_status: keyof typeof stockLabels; is_published: boolean };
+type Row = { id: string; name: string; category: string; sku: string | null; price: number | null; price_unit: string | null; price_on_request: boolean; stock_quantity: number; sizes: string[] | null; stock_status: keyof typeof stockLabels; is_published: boolean };
 
 export default async function ProductsPage() {
   const s = await requireAdmin("team");
-  const { data } = await s.db.from("products").select("id, name, category, sku, price, price_unit, price_on_request, stock_quantity, stock_status, is_published").order("category").order("name").returns<Row[]>();
+  const { data } = await s.db.from("products").select("id, name, category, sku, price, price_unit, price_on_request, stock_quantity, sizes, stock_status, is_published").order("category").order("name").returns<Row[]>();
   return (
     <>
       <PageHeader
@@ -44,6 +44,11 @@ export default async function ProductsPage() {
                   {x.name}
                 </Link>
                 {x.sku && <span className="text-[13px] text-gray-500">SKU {x.sku}</span>}
+                {x.sizes && x.sizes.length > 0 && (
+                  <span className="block max-w-72 truncate text-[13px] text-gray-500" title={x.sizes.join(", ")}>
+                    {x.sizes.length} {x.sizes.length === 1 ? "size" : "sizes"}: {x.sizes.join(", ")}
+                  </span>
+                )}
               </Td>
               <Td>
                 <CategoryTag category={x.category} />

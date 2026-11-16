@@ -18,13 +18,23 @@ type Props = {
   defaultService?: string;
   productId?: string;
   productName?: string;
+  /** Sizes the product comes in; the customer picks one. */
+  sizes?: string[];
+  defaultSize?: string;
   submitLabel?: string;
 };
 
 const budgets = ["Not sure yet", "Below ₱100,000", "₱100,000 to ₱500,000", "₱500,000 to ₱1,000,000", "Above ₱1,000,000"];
 const contactMethods = ["Phone call", "Messenger", "Text message", "Email"];
 
-export function InquiryForm({ type, services = [], defaultService, productId, productName, submitLabel = "Send my request" }: Props) {
+/** "Product: PVC wall panels (25 cm x 2.9 m)", kept within the 120-character service field. */
+function productLabel(name: string, size?: string) {
+  const base = `Product: ${name}`;
+  return (size ? `${base} (${size})` : base).slice(0, 120);
+}
+
+export function InquiryForm({ type, services = [], defaultService, productId, productName, sizes = [], defaultSize, submitLabel = "Send my request" }: Props) {
+  const [size, setSize] = useState<string | undefined>(defaultSize);
   const startedAt = useRef(Date.now());
   const [files, setFiles] = useState<File[]>([]);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -42,7 +52,7 @@ export function InquiryForm({ type, services = [], defaultService, productId, pr
     resolver: zodResolver(inquirySchema),
     defaultValues: {
       type,
-      service: defaultService ?? (type === "quotation" ? services[0] : productName ? `Product: ${productName}` : ""),
+      service: defaultService ?? (type === "quotation" ? services[0] : productName ? productLabel(productName, defaultSize) : ""),
       product_id: productId ?? "",
       attachments: [],
       website: "",
@@ -178,7 +188,34 @@ export function InquiryForm({ type, services = [], defaultService, productId, pr
       {productName && (
         <p className="rounded-lg bg-mist px-4 py-3 text-[15px]">
           Asking about: <strong className="text-navy-800">{productName}</strong>
+          {size && <span className="text-gray-600"> · {size}</span>}
         </p>
+      )}
+
+      {productName && sizes.length > 0 && (
+        <fieldset className="flex flex-col gap-3">
+          <legend className="mb-3 text-[15px] font-semibold text-navy-800">Which size? (optional)</legend>
+          <div className="flex flex-wrap gap-2.5">
+            {sizes.map((s) => (
+              <button
+                key={s}
+                type="button"
+                aria-pressed={size === s}
+                onClick={() => {
+                  const next = size === s ? undefined : s;
+                  setSize(next);
+                  setValue("service", productLabel(productName, next));
+                }}
+                className={cn(
+                  "min-h-11 rounded-full border-[1.5px] px-4 py-2 text-sm transition-colors",
+                  size === s ? "border-navy-800 bg-navy-800 font-semibold text-white" : "border-[#cbd2dc] bg-white text-navy-800 hover:bg-navy-100",
+                )}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </fieldset>
       )}
 
       <div className="grid gap-5 sm:grid-cols-2">
