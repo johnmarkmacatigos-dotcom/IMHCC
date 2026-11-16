@@ -24,6 +24,7 @@ const schema = z.object({
   price: money,
   price_unit: optional(40, "Unit"),
   price_on_request: z.boolean(),
+  sizes: z.array(z.string().max(80, "Each size must be 80 characters or less")).max(30, "Up to 30 sizes"),
   stock_quantity: z.coerce.number({ message: "Enter a whole number" }).int().min(0).max(10_000_000),
   stock_status: z.enum(["in_stock", "low_stock", "out_of_stock", "made_to_order"]),
   delivery_info: optional(300, "Delivery info"),
@@ -35,7 +36,7 @@ const schema = z.object({
 export async function saveProduct(_: FormState, fd: FormData): Promise<FormState> {
   const s = await requireAdmin("team");
   const id = String(fd.get("id") ?? "");
-  const parsed = schema.safeParse(formObject(fd, { booleans: ["price_on_request", "is_featured", "is_published"] }));
+  const parsed = schema.safeParse(formObject(fd, { booleans: ["price_on_request", "is_featured", "is_published"], lists: ["sizes"] }));
   if (!parsed.success) return fieldErrors(parsed.error);
   const values = {
     ...parsed.data,

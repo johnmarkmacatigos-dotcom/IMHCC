@@ -48,6 +48,23 @@ export default async function HardwarePage() {
                     <div className="flex flex-1 flex-col gap-3 p-5">
                       <h3 className="text-xl">{p.name}</h3>
                       {p.description && <p className="text-[15px] leading-relaxed text-gray-600">{p.description}</p>}
+                      {p.sizes && p.sizes.length > 0 && (
+                        <div className="flex flex-col gap-2">
+                          <span className="text-xs font-semibold tracking-wider text-gray-500 uppercase">Sizes</span>
+                          <ul className="flex flex-wrap gap-1.5" aria-label={`${p.name} sizes`}>
+                            {p.sizes.map((size) => (
+                              <li key={size}>
+                                <Link
+                                  href={`/contact?product=${p.slug}&size=${encodeURIComponent(size)}`}
+                                  className="inline-flex min-h-8 items-center rounded-full border border-navy-800/20 bg-mist px-3 text-[13px] font-medium text-navy-800 hover:border-gold-500 hover:bg-gold-100"
+                                >
+                                  {size}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                       {p.specifications && <p className="text-sm whitespace-pre-line text-gray-500">{p.specifications}</p>}
                       <p className="font-display text-lg font-semibold text-navy-800">
                         {p.price_on_request || p.price === null ? "Price on request" : `${formatPeso(p.price)}${p.price_unit ? ` / ${p.price_unit}` : ""}`}

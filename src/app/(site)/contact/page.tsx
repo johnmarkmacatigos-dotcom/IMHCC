@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   description: "Call, message, or visit Iloilo Modern Homes Construction Co. in Santa Barbara, Iloilo.",
 };
 
-type Props = { searchParams: Promise<{ product?: string; tab?: string }> };
+type Props = { searchParams: Promise<{ product?: string; tab?: string; size?: string }> };
 
 export default async function ContactPage({ searchParams }: Props) {
-  const [{ product: productSlug, tab }, s, products] = await Promise.all([searchParams, getSettings(), getProducts()]);
+  const [{ product: productSlug, tab, size }, s, products] = await Promise.all([searchParams, getSettings(), getProducts()]);
   const product = productSlug ? products.find((p) => p.slug === productSlug) : undefined;
   const isUuid = (v: string) => /^[0-9a-f-]{36}$/.test(v);
 
@@ -67,7 +67,7 @@ export default async function ContactPage({ searchParams }: Props) {
         <div className="min-w-0 flex-[999_1_560px] rounded-2xl border border-gray-200 bg-white p-6 sm:p-9">
           <ContactTabs
             initialTab={product ? "product" : tab === "consultation" ? "consultation" : "contact"}
-            product={product ? { id: isUuid(product.id) ? product.id : undefined, name: product.name } : undefined}
+            product={product ? { id: isUuid(product.id) ? product.id : undefined, name: product.name, sizes: product.sizes ?? [], size: size && product.sizes?.includes(size) ? size : undefined } : undefined}
           />
         </div>
       </div>

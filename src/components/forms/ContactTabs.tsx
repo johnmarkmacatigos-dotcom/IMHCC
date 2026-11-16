@@ -6,7 +6,7 @@ import { InquiryForm } from "./InquiryForm";
 
 type Tab = "contact" | "consultation" | "product";
 
-export function ContactTabs({ initialTab, product }: { initialTab: Tab; product?: { id?: string; name: string } }) {
+export function ContactTabs({ initialTab, product }: { initialTab: Tab; product?: { id?: string; name: string; sizes?: string[]; size?: string } }) {
   const [tab, setTab] = useState<Tab>(initialTab);
   const tabs: { id: Tab; label: string }[] = [
     { id: "contact", label: "Send a message" },
@@ -34,7 +34,7 @@ export function ContactTabs({ initialTab, product }: { initialTab: Tab; product?
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         {tab === "contact" && <InquiryForm key="contact" type="contact" submitLabel="Send message" />}
         {tab === "consultation" && <InquiryForm key="consultation" type="consultation" submitLabel="Request consultation" />}
-        {tab === "product" && product && <InquiryForm key="product" type="product" productId={product.id} productName={product.name} submitLabel="Send inquiry" />}
+        {tab === "product" && product && <InquiryForm key="product" type="product" productId={product.id} productName={product.name} sizes={product.sizes} defaultSize={product.size} submitLabel="Send inquiry" />}
       </div>
     </div>
   );
